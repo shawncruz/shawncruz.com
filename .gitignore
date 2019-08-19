@@ -1,4 +1,6 @@
-# Generate source
+# Generate files and directories
+build/
 package-lock.json
+
 # Dependency directories
 node_modules/
