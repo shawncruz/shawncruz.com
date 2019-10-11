@@ -5,6 +5,13 @@
   margin: 0 auto;
   width: 630px;
   overflow: hidden;
+  border: 1px solid black;
+  outline-style: solid;
+}
+
+figcaption {
+  color: grey;
+  font-style: italic;
 }
 
 blockquote {
