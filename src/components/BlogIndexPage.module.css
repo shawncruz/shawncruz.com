@@ -1,25 +1,59 @@
-.title {
-  font-family: Montserrat, sans-serif;
-  font-size: 2.5rem;
-  font-weight: 900;
-  line-height: 3.5rem;
-  margin-top: 0;
-  margin-bottom: 2.625rem;
-  text-rendering: optimizeLegibility;
+@font-face {
+  font-family: Helvetica;
+  src: url("../assets/fonts/HelveticaNeueLTStd-BlkIt.otf") format("opentype");
 }
+
+.title {
+  font-family: Helvetica; 
+  font-size: 42px; 
+  font-style: italic; 
+  font-variant: normal; 
+  font-weight: 700;
+  letter-spacing: -5px;
+  position: relative;
+  width: 90%;
+  max-width: 1000px;
+}
+
 .title a {
   color: black;
   text-decoration: none;
+}
+
+.redPeriod {
+  color: #FF0000 !important;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 0;
 }
 
 .articlesList,
 .articlesList > li {
   list-style: none;
   padding: 0;
-  margin: 0 0 2.625rem;;
 }
 
 .footer {
   margin-top: 7rem;
   margin-bottom: 0.5rem;
+}
+
+.container {
+  display: flex;
+}
+
+.container h3 {
+  margin: inherit;
+}
+
+.fixed{
+  width: 200px;
+}
+
+.flexItem{
+  width: 65%;
+  float: right;
 }

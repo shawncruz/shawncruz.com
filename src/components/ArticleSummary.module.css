@@ -7,3 +7,9 @@
 .ArticleSummary a {
   text-decoration: none;
 }
+
+.ArticleSummary p {
+  font-size: 12px;
+  font-style: italic;
+  color: #6F6A72;
+}

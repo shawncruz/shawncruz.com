@@ -1,5 +1,10 @@
+@font-face {
+  font-family: Helvetica;
+  src: url("../assets/fonts/HelveticaNeueLTStd-BlkIt.otf") format("opentype");
+}
+
 .TagPage > h1 {
-  font-family: Montserrat, sans-serif;
+  font-family: Helvetica;
   font-size: 2.5rem;
   font-weight: 900;
   line-height: 1.1;

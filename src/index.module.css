@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Merriweather:400,400i,700,700i,900|Montserrat:900');
 
 :root {
-  --primary-color: #d23669;
-  --primary-color-light: rgb(255, 167, 196);
+  --primary-color: #020759;
+  --primary-color-light: #001AC9;
 }
 
 :global * {
@@ -11,12 +11,19 @@
 
 :global html {
   color: rgba(0, 0, 0, 0.9);
-  font: 100%/1.75 Morriweather, Georgia, serif;
+  font: 100%/1.75;
+  font-family: ProximaNova;
+}
+
+@font-face {
+  font-family: ProximaNova;
+  src: url("./assets/fonts/ProximaNova-Regular.otf") format("opentype");
 }
 
 :global body {
   font-kerning: normal;
-  font-family: 'Merriweather','Georgia',serif;
+  font-family: ProximaNova;
+  font: 400 16px/1.7 ProximaNova;
   font-feature-settings: "kern", "liga", "clig", "calt";
   font-weight: 400;
   margin: 0;

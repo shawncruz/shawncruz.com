@@ -1,9 +1,15 @@
+@font-face {
+  font-family: ProximaNova;
+  src: url("../assets/fonts/ProximaNova-Regular.otf") format("opentype");
+}
+
 .TagIndexPage > h1 {
-  font-family: Montserrat, sans-serif;
+  font-family: ProximaNova;
   font-size: 2.5rem;
   font-weight: 900;
   line-height: 1.1;
   margin-top: 1.7rem;
   margin-bottom: 2.4rem;  
   text-rendering: optimizeLegibility;
+  color: var(--primary-color);
 }
