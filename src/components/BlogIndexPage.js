@@ -43,7 +43,6 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
               screenName: "shavvncruz"
             }}
             options={{
-              username: "shavvncruz",
               height: "400",
               width: "300"
             }}
