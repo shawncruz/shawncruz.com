@@ -50,10 +50,16 @@ ul {
 }
 
 .fixed{
-  width: 200px;
+  width: 15%;
 }
 
 .flexItem{
-  width: 65%;
+  width: 60%;
   float: right;
+}
+
+.twitterItem{
+  width: 25%;
+  float: right;
+  margin-left: 150px;
 }

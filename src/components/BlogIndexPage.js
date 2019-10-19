@@ -3,6 +3,7 @@ import { Link } from "react-navi";
 import ArticleSummary from "./ArticleSummary";
 import Pagination from "./Pagination";
 import styles from "./BlogIndexPage.module.css";
+import { Timeline } from "react-twitter-widgets";
 
 function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (
@@ -34,6 +35,19 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
               pageNumber={pageNumber}
             />
           )}
+        </div>
+        <div className={styles.twitterItem}>
+          <Timeline
+            dataSource={{
+              sourceType: "profile",
+              screenName: "shavvncruz"
+            }}
+            options={{
+              username: "shavvncruz",
+              height: "400",
+              width: "300"
+            }}
+          />
         </div>
       </div>
 
