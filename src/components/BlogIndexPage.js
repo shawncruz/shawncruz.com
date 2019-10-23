@@ -9,7 +9,7 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (
     <div>
       <div className={styles.container}>
-        <div className={styles.fixed}>
+        <div className={styles.fixed + " " + styles.resourcesToggle}>
           <h3>Resources</h3>
           <ul>
             <li>
@@ -36,7 +36,7 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
             />
           )}
         </div>
-        <div className={styles.twitterItem}>
+        <div className={styles.timelineItem + " " + styles.timelineToggle}>
           <Timeline
             dataSource={{
               sourceType: "profile",

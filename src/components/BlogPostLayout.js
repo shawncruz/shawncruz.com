@@ -17,7 +17,7 @@ function BlogPostLayout({ blogRoot }) {
     <>
       {head}
       <article className={styles2.container}>
-        <div className={styles2.fixed}>
+        <div className={styles2.fixed + " " + styles2.resourcesToggle}>
           <h3>Resources</h3>
           <ul>
             <li>

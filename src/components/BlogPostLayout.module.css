@@ -9,6 +9,7 @@
   line-height: 1.1;
   text-rendering: optimizeLegibility;
 }
+
 .title > a {
   text-decoration: none;
 }
@@ -17,12 +18,32 @@
   margin-bottom: 2.4rem;  
 }
 .header .title {
-  font-size: 2.5rem;
+  font-size: 35px;
   margin-top: 0rem;
   margin-bottom: 0;
 }
 .header .title > a {
   --primary-color: #020759;
+}
+
+@media only screen and (max-width: 800px) {
+  .header .title {
+    font-size: 15px !important;
+  }
+}
+
+@font-face {
+  font-family: ProximaNova;
+  src: url("../assets/fonts/ProximaNova-Regular.otf") format("opentype");
+}
+@media only screen and (max-width: 800px) {
+  body {
+    /* font-size: 8px !important; */
+    font: 400 8px/1.7 ProximaNova !important;
+  }
+  code {
+    font: 400 8px/1.7 ProximaNova !important;
+  }
 }
 
 .footer {
@@ -196,4 +217,9 @@
 
 .content :global(.token.namespace) {
   color: rgb(178, 204, 214);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }

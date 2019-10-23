@@ -1,10 +1,11 @@
 import React from "react";
 import { View, Link, NotFoundBoundary, useLoadingRoute } from "react-navi";
-import siteMetadata from "../siteMetadata";
 import NotFoundPage from "./NotFoundPage";
 import LoadingIndicator from "./LoadingIndicator";
+import HamburgerMenu from "./HamburgerMenu";
 import styles from "./BlogLayout.module.css";
 import styles2 from "./BlogIndexPage.module.css";
+import ShawnCruzLogo from "../assets/images/ShawnCruz_1.svg";
 
 function BlogLayout({ blogRoot, isViewingIndex }) {
   let loadingRoute = useLoadingRoute();
@@ -12,27 +13,14 @@ function BlogLayout({ blogRoot, isViewingIndex }) {
   return (
     <div className={styles.container}>
       <LoadingIndicator active={!!loadingRoute} />
-
-      {
-        // Don't show the header on index pages, as it has a special header.
-        // !isViewingIndex && (
-        //   <header>
-        //     <h3 className={styles.title}>
-        //       <Link href={blogRoot}>{siteMetadata.title}</Link>
-        //     </h3>
-        //   </header>
-        // )
-        <header>
-          <h1 className={styles2.title}>
-            <Link href={blogRoot}>{siteMetadata.titleBeginning}</Link>
-            <Link className={styles2.redPeriod} href={blogRoot}>
-              {siteMetadata.titleMiddle}
-            </Link>
-            <Link href={blogRoot}>{siteMetadata.titleEnd}</Link>
-          </h1>
-        </header>
-      }
-
+      <header>
+        {/* <HamburgerMenu /> */}
+        <h1 className={styles2.title}>
+          <Link href={blogRoot}>
+            <img src={ShawnCruzLogo} alt="ShawnCruz." width="225px" />
+          </Link>
+        </h1>
+      </header>
       <main>
         <NotFoundBoundary render={() => <NotFoundPage />}>
           <View />
