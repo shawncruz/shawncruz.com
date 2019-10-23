@@ -70,4 +70,8 @@ ul {
   .resourcesToggle {
     display: none !important;
   }
+
+  .flexItem {
+    width: 100%;
+  }
 }

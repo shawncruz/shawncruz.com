@@ -17,10 +17,10 @@
 
 @media only screen and (max-width: 800px) {
   .ArticleSummary h2 {
-    font-size: 15px !important;
+    font-size: 20px !important;
   }
 
   .ArticleSummary p {
-    font-size: 8px;
+    font-size: 10px !important;
   }
 }
