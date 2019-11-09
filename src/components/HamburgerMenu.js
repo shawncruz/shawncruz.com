@@ -1,49 +1,35 @@
-import React, { Component } from "react";
+import React from "react";
+import { Link } from "react-navi";
 import styles from "./HamburgerMenu.module.css";
 
-class HamburgerMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { isOpen: false };
-  }
+/**
+ * Made by Erik Terwan
+ * Modified by Shawn Cruz for the purposes of shawncruz.com
+ * 24th of November 2015
+ * MIT License
+ */
+function HamburgerMenu() {
+  return (
+    <div id={styles.menuToggle}>
+      <input type="checkbox" />
 
-  toggleMenu() {
-    this.setState({ isOpen: !this.state.isOpen });
-  }
+      <span></span>
+      <span></span>
+      <span></span>
 
-  render() {
-    return (
-      <div className={styles.hamburgerContainer} id={styles.menuToggle}>
-        <input type="checkbox" />
-
-        <span></span>
-        <span></span>
-        <span></span>
-
-        <ul id={styles.menu}>
-          <a href="#" className={styles.menuItem}>
-            <li>Home</li>
-          </a>
-          <a href="#" className={styles.menuItem}>
-            <li>About</li>
-          </a>
-          <a href="#" className={styles.menuItem}>
-            <li>Info</li>
-          </a>
-          <a href="#" className={styles.menuItem}>
-            <li>Contact</li>
-          </a>
-          <a
-            href="https://erikterwan.com/"
-            target="_blank"
-            className={styles.menuItem}
-          >
-            <li>Show me more</li>
-          </a>
-        </ul>
-      </div>
-    );
-  }
+      <ul id={styles.menu}>
+        <li>
+          <Link href="/about">About Me</Link>
+        </li>
+        <li>
+          <Link href="/tags">Tags</Link>
+        </li>
+        <li>
+          <Link href="https://twitter.com/shavvncruz">Twitter</Link>
+        </li>
+      </ul>
+    </div>
+  );
 }
 
 export default HamburgerMenu;

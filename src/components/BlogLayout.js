@@ -14,12 +14,12 @@ function BlogLayout({ blogRoot, isViewingIndex }) {
     <div className={styles.container}>
       <LoadingIndicator active={!!loadingRoute} />
       <header>
-        {/* <HamburgerMenu /> */}
-        <h1 className={styles2.title}>
+        <HamburgerMenu />
+        <div className={styles2.title}>
           <Link href={blogRoot}>
             <img src={ShawnCruzLogo} alt="ShawnCruz." width="225px" />
           </Link>
-        </h1>
+        </div>
       </header>
       <main>
         <NotFoundBoundary render={() => <NotFoundPage />}>
