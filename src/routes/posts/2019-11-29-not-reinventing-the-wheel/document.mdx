@@ -1,0 +1,106 @@
+import styles from './document.module.css'
+
+# Intro
+The approach I took to launching my personal website was to host something first, then customize it later. That “something” was an out-of-the-box solution called [create-react-blog](https://github.com/jamesknelson/create-react-blog), and it took me all of 5 minutes to build and deploy. Since all pages are client-side rendered, the entire application gets deployed to the browser and requires no further complexity than that. I created new repository on my Github called [shawncruz.com](https://github.com/shawncruz/shawncruz.com) so that I could easily make changes to and distribute my personal website, using the `create-react-blog` template as a base. 
+
+# Setup
+
+I bought my personal website’s domain name through [SiteGround](https://www.siteground.com/kb/how_can_i_purchase_from_siteground_a_new_domain_name/). I host my personal website on a 5GB RAM Droplet running Ubuntu 18.04 and am using NGINX to serve it. That’s about it for the initial setup. 
+
+The following great documentation helped me get my template deployed and served to users in very little time:
+- • [Installing NGINX on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04)
+- • [Automating Git Deployment w/Hooks](https://gist.github.com/noelboss/3fe13927025b89757f8fb12e9066f2fa)
+- • [Enabling HTTPS with Certbot](https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx.html)
+
+# Deployment
+
+Deploying my personal website to my Droplet was pretty simple at first. I cloned the repository in my home directory, built the application, then pointed my NGINX server root directory at the `/build` directory. This seemed to be a good idea, and is probably sufficient for a small, one-person project, but is generally looked at as bad practice. Instead, a [bare repository](https://www.saintsjd.com/2011/01/what-is-a-bare-git-repository/) would be more appropriate since files should never be edited and pushed to `master` from the production server. So, I replaced my old non-bare repository with a bare repository. 
+
+Now I needed some way to push new changes to the server remotely. I found this extremely useful [gist page](https://gist.github.com/noelboss/3fe13927025b89757f8fb12e9066f2fa) which uses a `post-receive` hook to accomplish this. After some tweaking, my post-receive hook looks like this:
+```
+#!/bin/bash
+
+# MIT © Sindre Sorhus - sindresorhus.com. GIST: https://gist.github.com/sindresorhus/7996717
+# Function to run when this repo receives a new commit. Utilized to prevent running `npm install` unnecessarily.
+changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
+check_run() {
+	echo "$changed_files" | grep --quiet "$1" && eval "$2"
+}
+
+# Explicitly add nvm to path so that we can use it below. TODO: This can probably be removed once
+# the node versioning hack below is solved.
+PATH="/usr/local/bin:$PATH"
+if [ -f $HOME/.nvm/nvm.sh ]
+then
+  . $HOME/.nvm/nvm.sh
+  PATH="$HOME/.nvm/versions/node/$(nvm current)/bin:$PATH"
+fi
+
+while read oldrev newrev ref
+do
+    if [[ $ref =~ .*/master$ ]];
+    then
+        echo "Master ref received. Deploying master branch to production…"
+        git --work-tree=/var/www/shawncruz.com --git-dir=/root/personal-blog checkout -f
+	cd /var/www/shawncruz.com;
+	# Use node version 10.16.0 or else the build will break. TODO: figure out how to solve this.
+	echo $(eval "nvm use 10.16.0;")
+	echo $(eval check_run package.json "npm install";)
+	echo $(eval npm run build;)
+    else
+        echo "Ref $ref successfully received. Doing nothing: only the master branch may be deployed on this server."
+    fi
+done
+```
+
+There are quite a few hacks in the script, but overall this was very simple to plug and play. Basically, what happens in this `post-receive` hook is when new changes are pushed to and received by this bare repository, it force overwrites all files in the `var/www/shawncruz.com`  directory, and rebuilds and deploys my personal website. 
+
+Pushing to this bare repository remotely first requires adding a new remote repository pointing directly at the machine and location of the bare repository (i.e. `git remote add production username@ip.address:bare-repository.git`). Now, whenever I have changes I want to deploy to production, redeploying is as simple as running `git push origin production`.
+
+# Pricing
+In total, I spend $1.33/month for the domain name and $5.00/month for the Droplet, which brings my total spending to **$6.33/month**.
+
+# Next Steps
+
+Since my main mission was to get something out into production that was uniquely my own, I took some shortcuts to speed things up. Next, I plan on making some improvements across the board. Here are a couple of categories I plan on improving in the future:
+
+### CSS Cleanup
+I swept a lot of inconsistencies and sloppiness under the rug so that my personal website would look decent. I used styles for specific components for other components, instead of moving shared styles into a more global file.
+For example, in BlogPostLayout.js, I use styles from BlogIndexPage as well:
+```
+import styles from "./BlogPostLayout.module.css";
+import styles2 from "./BlogIndexPage.module.css";
+// ...
+<article className={styles2.container}>
+// ...
+<footer className={styles.footer}>
+```
+This should be an easy fix, and will make my components a lot more readible.
+
+### More consistent branding
+
+I want a consistent feel across my entire personal website. This means consistent color schemes, logos, wording, and UI components. This will be part of the CSS Cleanup, but I also want to further define more clearly the color palette and component styling to use site-wide.
+
+### Streamline deployment
+
+My `post-receive` hook has a couple of hacks that deal with library dependency failures on install. I would like to get rid of this confusing logic. See here for specifics:
+```
+# Explicitly add nvm to path so that we can use it below. TODO: This can probably be removed once
+# the node versioning hack below is solved.
+PATH="/usr/local/bin:$PATH"
+if [ -f $HOME/.nvm/nvm.sh ]
+then
+  . $HOME/.nvm/nvm.sh
+  PATH="$HOME/.nvm/versions/node/$(nvm current)/bin:$PATH"
+fi
+# …
+# Use node version 10.16.0 or else the build will break. TODO: figure out how to solve this.
+	echo $(eval "nvm use 10.16.0;")
+```
+
+### Remove all dependencies from template 
+
+This is part of Streamline Deployment, but also includes removing all dependencies from `create-react-blog` (i.e. all Navi-related libraries). Reason being that I believe they come with some mental overhead and are overkill for my simple use-case.
+
+### Issue Tracker
+I have a bunch of ideas on how to improve my personal website. An issue tracker would be a good way to put thoughts to tasks, which would enable me to prioritize them in a more tangible way. Github has an issues section for each repository, so this will be a good place to start.
