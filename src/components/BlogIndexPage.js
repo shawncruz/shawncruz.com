@@ -10,13 +10,20 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
     <div>
       <div className={styles.container}>
         <div className={styles.fixed + " " + styles.resourcesToggle}>
-          <h3>Resources</h3>
           <ul>
             <li>
               <Link href="./about">About Me</Link>
             </li>
             <li>
-              <Link href="./tags">Tags</Link>
+              <Link href="https://www.linkedin.com/in/shawncruz">LinkedIn</Link>
+            </li>
+            <li>
+              <Link href="https://drive.google.com/file/d/1QEhJX1XRco7yN1OtigMFjY8r0qTUBHLj/view">
+                Resume
+              </Link>
+            </li>
+            <li>
+              <Link href="https://github.com/shawncruz">Github</Link>
             </li>
           </ul>
         </div>
