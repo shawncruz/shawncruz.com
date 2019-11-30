@@ -12,18 +12,18 @@ const postPathnames = Object.keys(postModules);
 const datePattern = /^((\d{1,4})-(\d{1,4})-(\d{1,4}))[/-]/;
 
 let postDetails = postPathnames.map(pathname => {
-  let slug = slugify(
-    pathname.replace(/post.jsx?$/, "").replace(/(\d)\/(\d)/, "$1-$2")
+  const postDetails = slugify(
+    pathname.replace(/post.jsx?$/, "").replace(/(\d)\/(\d)/, "$2")
   )
     .replace(/^[-.]+|[.-]+$/g, "")
     .replace(datePattern, "$1/");
-
   let date;
-  let dateMatch = slug.match(datePattern);
+  let dateMatch = postDetails.match(datePattern);
   if (dateMatch) {
     date = new Date(dateMatch[2], parseInt(dateMatch[3]) - 1, dateMatch[4]);
   }
-
+  // Discard date
+  const slug = postDetails.split("/")[1];
   return {
     slug,
     pathname,
