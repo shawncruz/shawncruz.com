@@ -19,7 +19,7 @@ function HamburgerMenu() {
 
       <ul id={styles.menu}>
         <li>
-          <Link href="./about">About Me</Link>
+          <Link href="/about">About Me</Link>
         </li>
         <li>
           <Link href="https://www.linkedin.com/in/shawncruz">LinkedIn</Link>

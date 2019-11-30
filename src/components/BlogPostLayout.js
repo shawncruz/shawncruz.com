@@ -20,7 +20,7 @@ function BlogPostLayout({ blogRoot }) {
         <div className={styles2.fixed + " " + styles2.resourcesToggle}>
           <ul>
             <li>
-              <Link href="./about">About Me</Link>
+              <Link href="/about">About Me</Link>
             </li>
             <li>
               <Link href="https://www.linkedin.com/in/shawncruz">LinkedIn</Link>

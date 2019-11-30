@@ -12,7 +12,7 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
         <div className={styles.fixed + " " + styles.resourcesToggle}>
           <ul>
             <li>
-              <Link href="./about">About Me</Link>
+              <Link href="/about">About Me</Link>
             </li>
             <li>
               <Link href="https://www.linkedin.com/in/shawncruz">LinkedIn</Link>
