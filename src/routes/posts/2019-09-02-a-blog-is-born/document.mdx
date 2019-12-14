@@ -11,40 +11,41 @@ Me, putting endless finishing touches on my personal website
 # Background
 
 This has been in the making for about 3 years now. Ever since I graduated college, I have made numerous attempts to create a personal website. 
-Each attempt was a reinvention of the wheel. I felt that building something from the ground up was the most genuine way of kicking off building my personal website. But just because something isn’t built from scratch, doesn’t mean there isn’t ingenuity in the way it was pulled together. So, the same should apply to me building my personal website. 
+Each was an attempt at reinventing the wheel. I felt that building something from the ground up was the most genuine way to build a personal website. But just because something isn’t built from scratch, doesn’t mean there isn’t ingenuity in the way it's pulled together. The same thinking should apply to building a personal website. 
 
-Tools for easily building websites have been available to the public for a few decades. Granted, the number of people with internet access has [dramatically increased](https://ourworldindata.org/internet) since the 90’s. Sites like AngelFire, Tripod, and GeoCities made it possible for nearly anyone with internet access to leave a digital footprint. Today, there are more powerful website building tools such as Squarespace, WordPress, and Wix. When I set out to build my personal website I wanted to make something without utilizing a website building tool. I assumed that building something from scratch was a rite of passage to becoming an established software engineer. After having finally launched my personal website, I really that this is definitely not the case.
+Tools for easily building websites have been available to the public for a few decades. Sites like AngelFire, Tripod, and GeoCities made it possible for nearly anyone with internet access to leave a digital footprint. Today, there are more powerful website building tools such as Squarespace, WordPress, and Wix. When I set out to build my personal website I wanted to make something without utilizing any of these tools. I assumed that building something from scratch was a rite of passage to becoming an established software engineer. After finally launching my personal website, I realize this is not the case.
 
 In honor of my first post, I wanted to recount some of the attempts that led me here.
 
-# 2016: MyFancyBlog
+# 2016: Dynamic Blog Builder
 
-My first attempt at creating a personal website took the form of a blog building tool I called MyFancyBlog. I wanted to build something abstract enough so that anybody could reuse it. Having just graduated from college, it only felt nature to make something that was perfectly engineered for any use case. The problem was, my primary goal was to build a personal website for /*me*/, not the rest of the world. I bogged myself down in peripheral features such as user login, searching posts, and a database. Having a Product Manager keep me focused would have done me good.
+I set out to build a dynamic blog builder in hopes that this would help launch my personal website, and many others. I took inspiration from sites like Blogger, Wikipedia, and Tumblr; and as such, wanted to build something just as ambitious. I wanted to build something abstract enough so that anybody could reuse it. Having just graduated from college, it only felt nature to make something that was perfectly engineered for every use case. However, my primary goal was to build a personal website for /*me*/, not the rest of the world. I bogged myself down with the endless possiblilities on how I could make the experience more customized.
 
 ### Basic Architecture
-MyFancyBlog was split out into two frontend client applications written in PHP and Twig, and a backend server written in PHP connecting to a MySQL database. One frontend client application handled writing and entering new blog posts, and the other frontend application handled displaying those blog posts to the public. 
 
-I primarily chose this stack because, at the time, PHP seemed like the easiest way to build a fast prototype. There was also a wealth of tutorials on how to build a web application using MySQL, Apache, and PHP. 
+The frontend client was built using PHP, JQuery, and Twig. It handled reading and editing blog posts from a user-specific editor.
 
-Within a couple of days, I had something tangible:
+The backend API was built also using PHP connecting to a MySQL database.
+
+I chose this stack due to having built something very similar to this in college and ported it over with ease.
+
+Within a couple of days, I had this:
 <p>
 <img src={phpBlog2016Png} className={styles['photo']} alt="logo"/>
 <figcaption>
-Yes, that’s a big search bar that searched all of 1 post(s)
+Yes, that’s a big search bar for all of 1 post(s)
 </figcaption>
 </p>
 
-As soon as I had my working product, I got bogged down in adding support for a home-brewed wiki markdown parser. I figured that if I couldn’t build blog pages without implementing a sophisticated tool like [stackedit.io](https://stackedit.io/), then it wasn’t ready for the world. 
-
-I eventually abandoned the project shortly after. There were no deadlines, so there was no reason for me to keep pushing forward.
+As soon as I had the thing working, I got bogged down in adding support for a home-brewed wiki markdown parser. I figured that if I couldn’t build blog pages without implementing a sophisticated tool like [stackedit.io](https://stackedit.io/), then it wasn’t ready for the world. I eventually abandoned the project shortly after. There were no deadlines, so there was no reason for me to keep pushing forward.
 
 # 2017: React
 
-I revisited building my personal website a year later. I wanted to rewrite everything I had previously done in React. The basic client/server architecture of the application remained the same, but I swapped out Twig and PHP for React and Java. I found numerous boilerplate options I could bootstrap the new version of my personal website with, such as [create-react-app](https://github.com/facebook/create-react-app), [bloggie](https://github.com/lestard/bloggie), and [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate). Most of them were bloated for my purposes, including support for technologies such as GraphQL. I bootstrapped implementations with various boilerplates, but each time I reached a working product, I got bogged down again with adding sophisticated support for tangential features. I constantly abandoned implementations because I couldn’t support easily adding photos, formatting code snippets, and editing blog posts. Ironically, what I had at that point was sufficient for _my_ personal website. 
+I learned about React in mid 2017, and wanted to make a second attempt at building a personal website with it. I found numerous boilerplate options I could bootstrap the new version of my personal website with, such as [create-react-app](https://github.com/facebook/create-react-app), [bloggie](https://github.com/lestard/bloggie), and [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate). Most of them were bloated for my purposes, including support for technologies such as GraphQL. I bootstrapped implementations with various boilerplates, but each time I reached a working product, I got bogged down again with adding sophisticated support for tangential features. I constantly abandoned implementations because I couldn’t support easily adding photos, formatting code snippets, and editing blog posts. I think a lot of it had to do with the quest for perfection. Ironically, what I had at that point was sufficient for _my_ personal website.
 
 # 2018: Simplicity is Key
 
-It was not until 2018 that I learned I only needed a fraction of the infrastructure I had built. A coworker of mine told me that he had built himself a database-less blog. All of his posts were stored as strings in text files. The concept of having no database in a web application was so foreign to me. How could I build a legitimate website if it didn’t have a database?
+It was not until 2018 that I learned I only needed a fraction of the infrastructure I had built. A coworker of mine told me that he his blog ran on static HTML. All of his posts were stored as raw HTML strings in text files. The concept of having no client/server relationship and no database in a web application was foreign to me. I thought every legitimate application today required a database.
 
 # 2019: Success
 
@@ -53,13 +54,16 @@ I got realistic about my website’s requirements:
 - • Content would be mostly _static_ HTML 
 - • Everything happen _client-side_
 
-This year I discovered [create-react-blog](https://github.com/jamesknelson/create-react-blog), which checked off all these boxes. Its entire workflow for creating and deploying blog posts was the simplest I’d seen. `create-react-blog` requires minimal user setup before deploying. This allowed me to focus on my primary goal: Deploying my personal website to the web. 
+I stopped thinking about how I could apply all the new and interesting technologies, patterns, and ideas I wanted to learn about to building a personal website, and started thinking about the actual content I could post there. 
 
-I was OK with not having built the application from scratch because `create-react-blog` gives me enough flexibility to feel like I’m still in  control of how the application functions. The process for writing and deploying posts is technical as well. I’ve even since overhauled the entire design of the website to feel entirely my own.
+This year I discovered [create-react-blog](https://github.com/jamesknelson/create-react-blog), which checked off all these boxes. Its entire workflow for creating and deploying blog posts was the simplest I’d seen. `create-react-blog` requires minimal user setup before deploying. Having a nearly out of the box solution allowed me to focus on a step I had never reached before: deploying something to the web.
+
+I was fine with not having built the application from scratch because `create-react-blog` gives me enough flexibility to feel like I’m still in control of how the application functions. The process for writing and deploying posts is technical as well. I’ve even since overhauled the entire design of the website to feel like my own.
 
 ### Uncharted Territory
 
-Having a functioning personal website was only part of the challenge. I still needed a domain name and a place to host my personal website. I was lucky enough to be able to purchase  `shawncruz.com`  through SiteGround. I deployed my personal website to a DigitalOcean Droplet. Both of these processes were relatively painless. I am eager to see how this setup works for me in the future.
+Having a functioning personal website was only part of the challenge. I still needed a domain name and a place to host my personal website. I was lucky enough to be able to purchase  `shawncruz.com`  through SiteGround. I deployed my personal website to a DigitalOcean Droplet. Both of these processes were relatively painless. I am eager to see how this setup continues to work for me.
 
 # Next Steps
-I plan to continue improving the design and appearance of my personal website. I place high importance on not only the content I post, but also the way that it’s presented visually. I aim to accumulate enough good content so that I can eventually put this on my professional resume.
+
+I plan to continue improving the design and appearance of my personal website. I place high importance on not only the content I post, but also the way that it’s presented visually. Most importantly, I want to keep coming up with ideas to write about. I aim to accumulate enough decent content so that I can eventually put this on my professional resume.
