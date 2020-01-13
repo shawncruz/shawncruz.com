@@ -5,7 +5,7 @@ import LoadingIndicator from "./LoadingIndicator";
 import HamburgerMenu from "./HamburgerMenu";
 import styles from "./BlogLayout.module.css";
 import styles2 from "./BlogIndexPage.module.css";
-import ShawnCruzLogo from "../assets/images/ShawnCruz_1.svg";
+import ShawnDotSvg from "../assets/images/shawn_dot.svg";
 
 function BlogLayout({ blogRoot, isViewingIndex }) {
   let loadingRoute = useLoadingRoute();
@@ -17,7 +17,7 @@ function BlogLayout({ blogRoot, isViewingIndex }) {
         <HamburgerMenu />
         <div className={styles2.title}>
           <Link href={blogRoot}>
-            <img src={ShawnCruzLogo} alt="ShawnCruz." width="225px" />
+            <img src={ShawnDotSvg} alt="Shawn." width="150px" />
           </Link>
         </div>
       </header>
