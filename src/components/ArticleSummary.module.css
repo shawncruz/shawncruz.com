@@ -13,14 +13,13 @@
 .ArticleSummary p {
   font-size: 12px;
   font-style: italic;
-  color: #6F6A72;
+  color: #6f6a72;
 }
 
 @media only screen and (max-width: 800px) {
   .ArticleSummary h2 {
     font-size: 30px !important;
   }
-
   .ArticleSummary p {
     font-size: 12px !important;
   }
