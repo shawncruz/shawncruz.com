@@ -4,6 +4,7 @@ import { MDXProvider } from "@mdx-js/react";
 import ArticleMeta from "./ArticleMeta";
 import styles from "./BlogPostLayout.module.css";
 import styles2 from "./BlogIndexPage.module.css";
+import MenuItems from "./MenuItems";
 
 function BlogPostLayout({ blogRoot }) {
   let { title, data, url } = useCurrentRoute();
@@ -18,22 +19,7 @@ function BlogPostLayout({ blogRoot }) {
       {head}
       <article className={styles2.container}>
         <div className={styles2.fixed + " " + styles2.resourcesToggle}>
-          <ul>
-            <li>
-              <Link href="/about">About Me</Link>
-            </li>
-            <li>
-              <Link href="https://www.linkedin.com/in/shawncruz">LinkedIn</Link>
-            </li>
-            <li>
-              <Link href="https://drive.google.com/file/d/1QEhJX1XRco7yN1OtigMFjY8r0qTUBHLj/view">
-                Resume
-              </Link>
-            </li>
-            <li>
-              <Link href="https://github.com/shawncruz">Github</Link>
-            </li>
-          </ul>
+          <MenuItems />
         </div>
         <div className={styles2.flexItem}>
           <header className={styles.header}>

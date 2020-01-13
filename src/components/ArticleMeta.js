@@ -1,6 +1,4 @@
-import { join } from "path";
 import React from "react";
-import { Link } from "react-navi";
 import { formatDate } from "../utils/formats";
 
 function ArticleMeta({ blogRoot, meta }) {

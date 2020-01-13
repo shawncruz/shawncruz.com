@@ -4,28 +4,14 @@ import ArticleSummary from "./ArticleSummary";
 import Pagination from "./Pagination";
 import styles from "./BlogIndexPage.module.css";
 import { Timeline } from "react-twitter-widgets";
+import MenuItems from "./MenuItems";
 
 function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (
     <div>
       <div className={styles.container}>
         <div className={styles.fixed + " " + styles.resourcesToggle}>
-          <ul>
-            <li>
-              <Link href="/about">About Me</Link>
-            </li>
-            <li>
-              <Link href="https://www.linkedin.com/in/shawncruz">LinkedIn</Link>
-            </li>
-            <li>
-              <Link href="https://drive.google.com/file/d/1QEhJX1XRco7yN1OtigMFjY8r0qTUBHLj/view">
-                Resume
-              </Link>
-            </li>
-            <li>
-              <Link href="https://github.com/shawncruz">Github</Link>
-            </li>
-          </ul>
+          <MenuItems />
         </div>
         <div className={styles.flexItem}>
           <ul className={styles.articlesList}>

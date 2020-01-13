@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-navi";
 import styles from "./HamburgerMenu.module.css";
+import MenuItems from "./MenuItems";
 
 /**
  * Made by Erik Terwan
@@ -8,7 +9,7 @@ import styles from "./HamburgerMenu.module.css";
  * 24th of November 2015
  * MIT License
  */
-function HamburgerMenu() {
+const HamburgerMenu = () => {
   return (
     <div id={styles.menuToggle}>
       <input type="checkbox" />
@@ -17,27 +18,11 @@ function HamburgerMenu() {
       <span></span>
       <span></span>
 
-      <ul id={styles.menu}>
-        <li>
-          <Link href="/about">About Me</Link>
-        </li>
-        <li>
-          <Link href="https://www.linkedin.com/in/shawncruz">LinkedIn</Link>
-        </li>
-        <li>
-          <Link href="https://drive.google.com/file/d/1QEhJX1XRco7yN1OtigMFjY8r0qTUBHLj/view">
-            Resume
-          </Link>
-        </li>
-        <li>
-          <Link href="https://github.com/shawncruz">Github</Link>
-        </li>
-        <li>
-          <Link href="https://twitter.com/shavvncruz">Twitter</Link>
-        </li>
-      </ul>
+      <div id={styles.menu}>
+        <MenuItems />
+      </div>
     </div>
   );
-}
+};
 
 export default HamburgerMenu;
