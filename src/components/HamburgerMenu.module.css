@@ -11,7 +11,8 @@
 
 html, body {
   /* needed because hiding the menu on the right side is not perfect,  */
-  overflow-x:hidden;
+  overflow-x: hidden;
+  position: relative;
 } 
  
  #menuToggle
@@ -162,5 +163,6 @@ html, body {
   .menu-closed #menu {
     display: none !important;
     overflow-x: hidden;
+    position: relative;
   }
  }

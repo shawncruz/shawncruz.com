@@ -1,6 +1,7 @@
 html, body {
   /* needed because hiding the menu on the right side is not perfect,  */
   overflow-x:hidden;
+  position: relative;
 } 
 
 .container {

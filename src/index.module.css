@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Merriweather:400,400i,700,700i,900|Montserrat:900');
 
+html, body {
+  position:relative;
+  overflow-x: hidden;
+}
+
 :root {
   --primary-color: #020759;
   --primary-color-light: #001AC9;
