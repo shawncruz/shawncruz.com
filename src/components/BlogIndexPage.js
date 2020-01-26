@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-navi";
 import ArticleSummary from "./ArticleSummary";
 import Pagination from "./Pagination";
 import styles from "./BlogIndexPage.module.css";
@@ -10,9 +9,6 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (
     <div>
       <div className={styles.container}>
-        <div className={styles.fixed + " " + styles.resourcesToggle}>
-          <MenuItems />
-        </div>
         <div className={styles.flexItem}>
           <ul className={styles.articlesList}>
             {postRoutes.map(route => (
@@ -30,7 +26,7 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
           )}
         </div>
         <div className={styles.timelineItem + " " + styles.timelineToggle}>
-          <Timeline
+          {/* <Timeline
             dataSource={{
               sourceType: "profile",
               screenName: "shavvncruz"
@@ -39,7 +35,7 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
               height: "400",
               width: "300"
             }}
-          />
+          /> */}
         </div>
       </div>
 

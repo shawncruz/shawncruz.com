@@ -1,25 +1,43 @@
+html, body {
+  /* needed because hiding the menu on the right side is not perfect,  */
+  overflow-x:hidden;
+} 
+
 .container {
   margin: 0 auto;
   max-width: 100%;
   padding: 0rem 3rem;
 }
 
-@font-face {
-  font-family: Helvetica;
-  src: url("../assets/fonts/HelveticaNeueLTStd-BlkIt.otf") format("opentype");
+header.top {  
+  height: 100%;
+  padding: 1em 3vw;
+  background-color: black;
 }
 
-.title {
-  font-family: Helvetica;
-  font-size: 1.44rem;
-  font-weight: 900;
-  line-height: 1.1;
-  margin-top: 0;
-  margin-bottom: 0;
-  text-rendering: optimizeLegibility;
+main {
+  padding-top: 4em;
+  padding-bottom: 4em;
 }
 
-.title > a {
-  color: var(--primary-color-light);
-  text-decoration: none;
+@media only screen and (min-width: 800px) {
+  header.top {
+    width: 20vw;
+    position: fixed;
+    text-align: center;
+  }
+
+  main {
+    margin-left: 20vw;
+  }
+
+  .menuItems ul {
+    margin-top: 20px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .menuItems {
+    display: none !important;
+  }
 }

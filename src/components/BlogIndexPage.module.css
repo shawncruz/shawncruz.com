@@ -1,9 +1,4 @@
-@font-face {
-  font-family: Helvetica;
-  src: url("../assets/fonts/HelveticaNeueLTStd-BlkIt.otf") format("opentype");
-}
-
-.title {
+  .title {
   font-family: Helvetica;
   font-size: 42px;
   font-style: italic;
@@ -11,7 +6,6 @@
   font-weight: 700;
   letter-spacing: -5px;
   position: relative;
-  padding-top: 50px;
   /* width: 90%; */
   /* max-width: 1000px; */
 }
@@ -39,8 +33,26 @@ ul {
 }
 
 .container {
+  box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 2.5em 3vw;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 790px;
 }
+/* .container {
+  display: flex;
+  padding-left: 28.35px;
+  padding-right: 28.35px;
+} */
 
 .container h3 {
   margin: inherit;
@@ -51,7 +63,7 @@ ul {
 }
 
 .flexItem {
-  width: 60%;
+  /* width: 60%; */
   float: right;
 }
 
@@ -68,10 +80,6 @@ ul {
 }
 
 @media only screen and (max-width: 800px) {
-  .resourcesToggle {
-    display: none !important;
-  }
-
   .flexItem {
     width: 100%;
   }

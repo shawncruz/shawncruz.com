@@ -18,9 +18,6 @@ function BlogPostLayout({ blogRoot }) {
     <>
       {head}
       <article className={styles2.container}>
-        <div className={styles2.fixed + " " + styles2.resourcesToggle}>
-          <MenuItems />
-        </div>
         <div className={styles2.flexItem}>
           <header className={styles.header}>
             <h1 className={styles.title}>
