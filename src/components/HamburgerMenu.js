@@ -10,6 +10,8 @@ import MenuItems from "./MenuItems";
  */
 const HamburgerMenu = () => {
   const [isChecked, setIsChecked] = useState(false);
+  document.body.style.overflowX = "hidden";
+  document.documentElement.style.overflowX = "hidden";
   const setIsCheckedWrapped = isChecked => {
     // Lock scrolling so we can't scroll past end of menu
     if (isChecked) {
@@ -18,8 +20,6 @@ const HamburgerMenu = () => {
       document.documentElement.style.overflow = "hidden";
       document.body.setAttribute("class", "menu-opened");
     } else {
-      document.body.style.overflow = null;
-      document.documentElement.style.overflow = null;
       document.body.setAttribute("class", "menu-closed");
     }
     setIsChecked(isChecked);

@@ -161,6 +161,6 @@ html, body {
 
   .menu-closed #menu {
     display: none !important;
-    overflow-x:hidden;
+    overflow-x: hidden;
   }
  }
