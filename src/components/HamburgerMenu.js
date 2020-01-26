@@ -20,6 +20,8 @@ const HamburgerMenu = () => {
       document.documentElement.style.overflow = "hidden";
       document.body.setAttribute("class", "menu-opened");
     } else {
+      document.body.style.overflow = null;
+      document.documentElement.style.overflow = null;
       document.body.setAttribute("class", "menu-closed");
     }
     setIsChecked(isChecked);
