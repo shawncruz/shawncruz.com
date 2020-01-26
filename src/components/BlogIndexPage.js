@@ -2,7 +2,6 @@ import React from "react";
 import ArticleSummary from "./ArticleSummary";
 import Pagination from "./Pagination";
 import styles from "./BlogIndexPage.module.css";
-import { Timeline } from "react-twitter-widgets";
 import MenuItems from "./MenuItems";
 
 function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
@@ -24,18 +23,6 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
               pageNumber={pageNumber}
             />
           )}
-        </div>
-        <div className={styles.timelineItem + " " + styles.timelineToggle}>
-          {/* <Timeline
-            dataSource={{
-              sourceType: "profile",
-              screenName: "shavvncruz"
-            }}
-            options={{
-              height: "400",
-              width: "300"
-            }}
-          /> */}
         </div>
       </div>
 

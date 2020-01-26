@@ -67,18 +67,6 @@ ul {
   float: right;
 }
 
-.timelineItem {
-  width: 25%;
-  float: right;
-  margin-left: 150px;
-}
-
-@media only screen and (max-width: 959px) {
-  .timelineToggle {
-    display: none !important;
-  }
-}
-
 @media only screen and (max-width: 800px) {
   .flexItem {
     width: 100%;
