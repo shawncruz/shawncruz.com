@@ -1,0 +1,13 @@
+@font-face {
+    font-family: Karla;
+    src: url("../assets/fonts/Karla-Regular.ttf") format("truetype");
+  }
+
+.timestamp {
+    color: #aaa;
+    font-size: 0.77778rem;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    margin-bottom: 0.75em;
+    font-family: Karla;
+}

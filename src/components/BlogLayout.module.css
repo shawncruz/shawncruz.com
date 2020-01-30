@@ -16,11 +16,6 @@ header.top {
   background-color: black;
 }
 
-main {
-  padding-top: 4em;
-  padding-bottom: 4em;
-}
-
 @media only screen and (min-width: 800px) {
   header.top {
     width: 20vw;
@@ -30,15 +25,32 @@ main {
 
   main {
     margin-left: 20vw;
+    padding-top: 2.5em;
+    padding-bottom: 2.5em;
   }
 
   .menuItems ul {
     margin-top: 20px;
   }
+
+  .logo {
+    margin: 0px 0 1.66667em;
+  }
+
+  .title {
+    padding-bottom: 3.33333em;
+    padding-top: 3.33333em;
+  }
+
 }
 
 @media only screen and (max-width: 800px) {
   .menuItems {
     display: none !important;
+  }
+
+  main {
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
   }
 }

@@ -1,13 +1,10 @@
 @font-face {
-  font-family: ProximaNova;
-  src: url("../assets/fonts/ProximaNova-Regular.otf") format("opentype");
+  font-family: CrimsonText;
+  src: url("../assets/fonts/CrimsonText-Regular.ttf") format("truetype");
 }
 
-.title {
-  font-family: ProximaNova;
-  font-weight: 900;
-  line-height: 1.1;
-  text-rendering: optimizeLegibility;
+ul {
+  list-style: circle;
 }
 
 .title > a {
@@ -18,12 +15,26 @@
   /* height: 100%; */
 }
 .header .title {
-  font-size: 35px;
+  font-family: CrimsonText;
+  font-weight: 900;
+  line-height: 1.1;
+  font-size: 2.66667rem;
+  text-rendering: optimizeLegibility;
   margin-top: 0rem;
   margin-bottom: 0;
 }
+
+.header .title:after {
+  content: ""; /* This is necessary for the pseudo element to work. */ 
+  display: block; /* This will put the pseudo element on its own line. */
+  
+  width: 60px; /* Change this to whatever width you want. */
+  padding-top: 20px; /* This creates some space between the element and the border. */
+  border-bottom: 0.5px solid red; /* This creates the border. Replace black with whatever color you want. */
+}
+
 .header .title > a {
-  --primary-color: #020759;
+  --primary-color: black;
 }
 
 @media only screen and (max-width: 800px) {
@@ -33,16 +44,16 @@
 }
 
 @font-face {
-  font-family: ProximaNova;
-  src: url("../assets/fonts/ProximaNova-Regular.otf") format("opentype");
+  font-family: CrimsonText;
+  src: url("../assets/fonts/CrimsonText-Regular.ttf") format("truetype");
 }
 
 @media only screen and (max-width: 800px) {
   body {
-    font: 400 15px/1.7 ProximaNova !important;
+    font: 400 15px/1.7 CrimsonText !important;
   }
   code {
-    font: 400 15px/1.7 ProximaNova !important;
+    font: 400 15px/1.7 CrimsonText !important;
   }
 }
 
@@ -52,7 +63,10 @@ img {
 }
 
 .footer {
-  margin-top: 7rem;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding-top: 2.5em;
+  padding-bottom: 2.5em;
 }
 .footer .title {
   font-size: 1.44rem;
@@ -71,6 +85,12 @@ img {
   flex-grow: 1;
   flex-shrink: 1;
   text-align: right;
+}
+
+.content { 
+  font-size: 112.5%;
+  line-height: 1.66667;
+  color: #1c1c1c;
 }
 
 .content hr {
@@ -150,7 +170,7 @@ img {
   white-space: normal;
 }
 .content a > code {
-  color: var(--primary-color);
+  color: black;
 }
 
 .content :global(.highlighted-line) {

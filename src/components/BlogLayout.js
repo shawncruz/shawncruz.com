@@ -15,7 +15,7 @@ function BlogLayout({ blogRoot, isViewingIndex }) {
       <header className={styles.top}>
         <div className={styles.title}>
           <div className={styles.logo}>
-            <Link href={blogRoot} className="logo">
+            <Link href="/" className="logo">
               <img src={ShawnDotReversedSvg} alt="Shawn." width="150px" />
             </Link>
           </div>

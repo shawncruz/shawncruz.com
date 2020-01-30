@@ -1,9 +1,26 @@
+@font-face {
+  font-family: Karla;
+  src: url("../assets/fonts/Karla-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: CrimsonText;
+  src: url("../assets/fonts/CrimsonText-Regular.ttf") format("truetype");
+}
+
+.ArticleSummary {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 1.66667em;
+  position: relative;
+}
+
 .ArticleSummary h2 {
   font-weight: 900;
   margin-bottom: 0;
   margin-top: 0;
   font-size: 35px;
   line-height: 1.1;
+  font-family: CrimsonText;
 }
 
 .ArticleSummary a {
@@ -14,6 +31,7 @@
   font-size: 12px;
   font-style: italic;
   color: #6f6a72;
+  font-family: Karla;
 }
 
 @media only screen and (max-width: 800px) {

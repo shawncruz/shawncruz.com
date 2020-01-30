@@ -6,8 +6,11 @@ import MenuItems from "./MenuItems";
 
 function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (
-    <div>
+    <>
       <div className={styles.container}>
+        <div className={styles.latest}>
+          <h1>Posts</h1>
+        </div>
         <div className={styles.flexItem}>
           <ul className={styles.articlesList}>
             {postRoutes.map(route => (
@@ -27,7 +30,7 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
       </div>
 
       <footer className={styles.footer}></footer>
-    </div>
+    </>
   );
 }
 

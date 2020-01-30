@@ -1,11 +1,12 @@
 import React from "react";
+import styles from "./ArticleTimestamp.module.css";
 import { formatDate } from "../utils/formats";
 
 function ArticleTimestamp({ meta }) {
   return (
-    <small>
+    <div className={styles.timestamp}>
       <time dateTime={meta.date.toUTCString()}>{formatDate(meta.date)}</time>
-    </small>
+    </div>
   );
 }
 

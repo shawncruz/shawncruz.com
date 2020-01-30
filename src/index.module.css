@@ -6,7 +6,7 @@ html, body {
 }
 
 :root {
-  --primary-color: #020759;
+  --primary-color: black;
   --primary-color-light: #001AC9;
 }
 
@@ -17,18 +17,18 @@ html, body {
 :global html {
   color: rgba(0, 0, 0, 0.9);
   font: 100%/1.75;
-  font-family: ProximaNova;
+  font-family: CrimsonText;
 }
 
 @font-face {
-  font-family: ProximaNova;
-  src: url("./assets/fonts/ProximaNova-Regular.otf") format("opentype");
+  font-family: CrimsonText;
+  src: url("./assets/fonts/CrimsonText-Regular.ttf") format("truetype");
 }
 
 :global body {
   font-kerning: normal;
-  font-family: ProximaNova;
-  font: 400 16px/1.7 ProximaNova;
+  font-family: CrimsonText;
+  font: 400 16px/1.7 CrimsonText;
   font-feature-settings: "kern", "liga", "clig", "calt";
   font-weight: 400;
   margin: 0;

@@ -1,5 +1,4 @@
   .title {
-  font-family: Helvetica;
   font-size: 42px;
   font-style: italic;
   font-variant: normal;
@@ -15,10 +14,24 @@
   text-decoration: none;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 0;
+@font-face {
+  font-family: CrimsonText;
+  src: url("../assets/fonts/CrimsonText-Regular.ttf") format("truetype");
+}
+
+.latest h1 {
+  margin-top: auto;
+  font-family: CrimsonText;
+  font-size: 2.66667rem;
+}
+
+.latest h1:after {
+  content: ""; /* This is necessary for the pseudo element to work. */ 
+  display: block; /* This will put the pseudo element on its own line. */
+
+  width: 60px; /* Change this to whatever width you want. */
+  padding-top: 20px; /* This creates some space between the element and the border. */
+  border-bottom: 0.5px solid red; /* This creates the border. Replace black with whatever color you want. */
 }
 
 .articlesList,
@@ -29,13 +42,15 @@ ul {
 
 .footer {
   margin-top: 7rem;
-  margin-bottom: 0.5rem;
+}
+
+@font-face {
+  font-family: Karla;
+  src: url("../assets/fonts/Karla-Regular.ttf") format("truetype");
 }
 
 .container {
   box-sizing: border-box;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
@@ -43,10 +58,11 @@ ul {
   -webkit-box-flex: 1;
   -ms-flex-positive: 1;
   flex-grow: 1;
-  padding: 2.5em 3vw;
+  padding: 0.5em 3vw;
   margin-left: auto;
   margin-right: auto;
   max-width: 790px;
+  font-family: Karla;
 }
 /* .container {
   display: flex;
@@ -77,4 +93,9 @@ ul {
     padding-left: 50px;
     margin-top: 10px;
   }
+}
+
+.footer {
+  border-top: 1px solid #eee;
+  padding-top: 2.5em;
 }

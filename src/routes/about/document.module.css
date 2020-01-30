@@ -1,6 +1,11 @@
 @font-face {
-  font-family: ProximaNova;
-  src: url("../../assets/fonts/ProximaNova-Regular.otf") format("opentype");
+  font-family: Karla;
+  src: url("../../assets/fonts/Karla-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: CrimsonText;
+  src: url("../../assets/fonts/CrimsonText-Regular.ttf") format("truetype");
 }
 
 .container {
@@ -14,19 +19,19 @@
   -webkit-box-flex: 1;
   -ms-flex-positive: 1;
   flex-grow: 1;
-  padding: 2.5em 3vw;
+  padding: 0.5em 3vw;
   margin-left: auto;
   margin-right: auto;
   max-width: 790px;
+  font-family: Karla;
 }
 
 .Document h1 {
-  font-family: ProximaNova;
+  margin-top: unset;
+  font-family: CrimsonText;
   font-size: 2.5rem;
   font-weight: 900;
   line-height: 1.1;
-  margin-top: 1.7rem;
-  margin-bottom: 2.4rem;  
   text-rendering: optimizeLegibility;
   color: #020759;
 }
@@ -37,6 +42,6 @@ table {
 
 td, th {
   border: 1px solid #999;
-  padding: 0.5rem;
+  /* padding: 0.5rem; */
   text-align: left;
 }

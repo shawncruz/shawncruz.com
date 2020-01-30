@@ -1,10 +1,10 @@
 import React from "react";
 import { Link, useCurrentRoute, useView } from "react-navi";
 import { MDXProvider } from "@mdx-js/react";
-import ArticleMeta from "./ArticleMeta";
 import styles from "./BlogPostLayout.module.css";
 import styles2 from "./BlogIndexPage.module.css";
 import MenuItems from "./MenuItems";
+import ArticleTimestamp from "./ArticleTimestamp";
 
 function BlogPostLayout({ blogRoot }) {
   let { title, data, url } = useCurrentRoute();
@@ -20,14 +20,10 @@ function BlogPostLayout({ blogRoot }) {
       <article className={styles2.container}>
         <div className={styles2.flexItem}>
           <header className={styles.header}>
+            <ArticleTimestamp meta={data} />
             <h1 className={styles.title}>
               <Link href={url.pathname}>{title}</Link>
             </h1>
-            <ArticleMeta
-              blogRoot={blogRoot}
-              meta={data}
-              readingTime={readingTime}
-            />
           </header>
           <MDXProvider
             components={{
