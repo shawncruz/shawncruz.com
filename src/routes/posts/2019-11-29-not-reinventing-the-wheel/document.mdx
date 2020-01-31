@@ -68,7 +68,7 @@ Since my main mission was to get something out into production that was uniquely
 ### CSS Cleanup
 I swept a lot of inconsistencies and sloppiness under the rug so that my personal website would look decent. I used styles for specific components for other components, instead of moving shared styles into a more global file.
 For example, in BlogPostLayout.js, I use styles from BlogIndexPage as well:
-```
+```javascript
 import styles from "./BlogPostLayout.module.css";
 import styles2 from "./BlogIndexPage.module.css";
 // ...
@@ -85,7 +85,7 @@ I want a consistent feel across my entire personal website. This means consisten
 ### Streamline deployment
 
 My `post-receive` hook has a couple of hacks that deal with library dependency failures on install. I would like to get rid of this confusing logic. See here for specifics:
-```
+```bash
 # Explicitly add nvm to path so that we can use it below. TODO: This can probably be removed once
 # the node versioning hack below is solved.
 PATH="/usr/local/bin:$PATH"
