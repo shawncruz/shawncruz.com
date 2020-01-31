@@ -17,7 +17,8 @@ The following great documentation helped me get my template deployed and served 
 Deploying my personal website to my Droplet was pretty simple at first. I cloned the repository in my home directory, built the application, then pointed my NGINX server root directory at the `/build` directory. This seemed to be a good idea, and is probably sufficient for a small, one-person project, but is generally looked at as bad practice. Instead, a [bare repository](https://www.saintsjd.com/2011/01/what-is-a-bare-git-repository/) would be more appropriate since files should never be edited and pushed to `master` from the production server. So, I replaced my old non-bare repository with a bare repository. 
 
 Now I needed some way to push new changes to the server remotely. I found this extremely useful [gist page](https://gist.github.com/noelboss/3fe13927025b89757f8fb12e9066f2fa) which uses a `post-receive` hook to accomplish this. After some tweaking, my post-receive hook looks like this:
-```
+
+```bash
 #!/bin/bash
 
 # MIT © Sindre Sorhus - sindresorhus.com. GIST: https://gist.github.com/sindresorhus/7996717

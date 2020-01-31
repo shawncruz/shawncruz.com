@@ -3,6 +3,12 @@
   src: url("../assets/fonts/CrimsonText-Regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: Karla;
+  src: url("../assets/fonts/Karla-Regular.ttf") format("truetype");
+}
+
+
 ul {
   list-style: circle;
 }
@@ -50,9 +56,6 @@ ul {
 
 @media only screen and (max-width: 800px) {
   body {
-    font: 400 15px/1.7 CrimsonText !important;
-  }
-  code {
     font: 400 15px/1.7 CrimsonText !important;
   }
 }
@@ -140,7 +143,7 @@ img {
 
 .content :not(pre) > code,
 .content pre {
-  background: hsla(0,0%,0%,0.9);
+  background: black;
 }
   
 .content pre::-moz-selection,
@@ -189,12 +192,18 @@ img {
 }
 
 .content :global(.token.comment) {
-  color: rgb(99, 119, 119);
+  color: grey;
+  font-style: italic;
+}
+
+.content :global(.token.shebang) {
+  color: grey;
+  font-style: italic;
 }
 
 .content :global(.token.string),
 .content :global(.token.url) {
-  color: rgb(173, 219, 103);
+  color: rgb(255, 225, 0);
 }
 
 .content :global(.token.variable) {
@@ -205,15 +214,24 @@ img {
   color: rgb(247, 140, 108);
 }
 
+.content :global(.token.function) {
+  color: #00ff44;
+  background-color: #00009c;
+}
+
+.content :global(.token.environment.constant){
+  color: rgb(173, 211, 108);
+  font-weight: 900;
+}
+
 .content :global(.token.builtin),
 .content :global(.token.char),
-.content :global(.token.constant),
-.content :global(.token.function) {
+.content :global(.token.constant){
   color: rgb(130, 170, 255);
 }
 
 .content :global(.token.punctuation) {
-  color: rgb(199, 146, 234);
+  color: white;
 }
 
 .content :global(.token.selector),
@@ -222,14 +240,23 @@ img {
   font-style: 'italic';
 }
 
+.content :global(.token.builtin.class-name) {
+  color: rgb(224, 161, 255);
+  font-style: 'italic';
+}
+
 .content :global(.token.class-name) {
-  color: rgb(255, 203, 139);
+  color: rgb(207, 255, 0);
+}
+
+.content :global(.token.operator) {
+  color: red;
 }
 
 .content :global(.token.tag),
-.content :global(.token.operator),
 .content :global(.token.keyword) {
-  color: #ffa7c4;
+  color: #2ae416;
+  background-color: #014201;
 }
 
 .content :global(.token.boolean) {
