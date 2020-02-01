@@ -8,7 +8,7 @@ import MenuItems from "./MenuItems";
  * MIT License
  * Modified by Shawn Cruz for the purposes of shawncruz.com
  */
-const HamburgerMenu = () => {
+const HamburgerMenu = ({ blogRoot }) => {
   const [isChecked, setIsChecked] = useState(false);
   const setIsCheckedWrapped = isChecked => {
     // Lock scrolling so we can't scroll past end of menu
@@ -35,7 +35,7 @@ const HamburgerMenu = () => {
       <span></span>
       <span></span>
       <div id={styles.menu}>
-        <MenuItems onItemClick={onItemClick} />
+        <MenuItems blogRoot={blogRoot} onItemClick={onItemClick} />
       </div>
     </div>
   );

@@ -2,11 +2,11 @@ import React from "react";
 import { Link } from "react-navi";
 import styles from "./MenuItems.module.css";
 
-const MenuItems = onItemClick => (
+const MenuItems = ({ blogRoot }, onItemClick) => (
   <div className={styles.menuItems}>
     <ul>
       <li>
-        <Link href="/" onClick={onItemClick}>
+        <Link href={blogRoot} onClick={onItemClick}>
           Home
         </Link>
       </li>

@@ -19,9 +19,9 @@ function BlogLayout({ blogRoot, isViewingIndex }) {
             </Link>
           </div>
           <div className={styles.menuItems}>
-            <MenuItems />
+            <MenuItems blogRoot={blogRoot} />
           </div>
-          <HamburgerMenu />
+          <HamburgerMenu blogRoot={blogRoot} />
         </div>
       </header>
       <main>

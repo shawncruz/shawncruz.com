@@ -8,7 +8,7 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (
     <>
       <div className={styles.container}>
-        <div class={styles.bannerImage}></div>
+        <div className={styles.bannerImage}></div>
         <div className={styles.divider}></div>
         <div className={styles.flexItem}>
           <ul className={styles.articlesList}>
