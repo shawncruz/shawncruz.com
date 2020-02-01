@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useCurrentRoute, useView } from "react-navi";
 import { MDXProvider } from "@mdx-js/react";
-import styles from "./BlogPostLayout.module.css";
+import styles from "./styles/BlogPostLayout.module.css";
 import ArticleTimestamp from "./ArticleTimestamp";
 
 function BlogPostLayout({ blogRoot }) {

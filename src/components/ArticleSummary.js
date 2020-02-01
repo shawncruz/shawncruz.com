@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-navi";
-import styles from "./ArticleSummary.module.css";
+import styles from "./styles/ArticleSummary.module.css";
 import ArticleTimestamp from "./ArticleTimestamp";
 
 function ArticleSummary({ blogRoot, route }) {

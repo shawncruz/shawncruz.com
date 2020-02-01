@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./HamburgerMenu.module.css";
+import styles from "./styles/HamburgerMenu.module.css";
 import MenuItems from "./MenuItems";
 
 /**

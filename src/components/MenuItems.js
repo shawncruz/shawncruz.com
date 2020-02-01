@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-navi";
-import styles from "./MenuItems.module.css";
+import styles from "./styles/MenuItems.module.css";
 
 const MenuItems = ({ blogRoot }, onItemClick) => (
   <div className={styles.menuItems}>

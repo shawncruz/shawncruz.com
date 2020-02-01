@@ -1,11 +1,11 @@
 @font-face {
   font-family: CrimsonText;
-  src: url("../assets/fonts/CrimsonText-Regular.ttf");
+  src: url("../../assets/fonts/CrimsonText-Regular.ttf");
 }
 
 @font-face {
   font-family: Karla;
-  src: url("../assets/fonts/Karla-Regular.ttf");
+  src: url("../../assets/fonts/Karla-Regular.ttf");
 }
 
 .container {

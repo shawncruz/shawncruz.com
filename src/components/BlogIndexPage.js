@@ -1,7 +1,7 @@
 import React from "react";
 import ArticleSummary from "./ArticleSummary";
 import Pagination from "./Pagination";
-import styles from "./BlogIndexPage.module.css";
+import styles from "./styles/BlogIndexPage.module.css";
 
 function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (

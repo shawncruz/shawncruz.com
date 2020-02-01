@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./ArticleTimestamp.module.css";
+import styles from "./styles/ArticleTimestamp.module.css";
 import { formatDate } from "../utils/formats";
 
 function ArticleTimestamp({ meta }) {

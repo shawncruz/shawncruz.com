@@ -2,7 +2,7 @@ import React from "react";
 import { View, Link, NotFoundBoundary } from "react-navi";
 import NotFoundPage from "./NotFoundPage";
 import HamburgerMenu from "./HamburgerMenu";
-import styles from "./BlogLayout.module.css";
+import styles from "./styles/BlogLayout.module.css";
 import ShawnDotReversedSvg from "../assets/images/shawn_dot_reversed.svg";
 import MenuItems from "./MenuItems";
 
