@@ -6,7 +6,7 @@ const MenuItems = ({ blogRoot }, onItemClick) => (
   <div className={styles.menuItems}>
     <ul>
       <li>
-        <Link title={"Home"} href={blogRoot} onClick={onItemClick}>
+        <Link href={blogRoot} onClick={onItemClick}>
           Home
         </Link>
       </li>
