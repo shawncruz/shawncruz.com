@@ -17,7 +17,6 @@ import BlogLayout from "../components/BlogLayout";
 import BlogPostLayout from "../components/BlogPostLayout";
 import siteMetadata from "../siteMetadata";
 import posts from "./posts";
-import * as Navi from "navi";
 
 // Split the posts into a list of chunks of the given size, and
 // then build index pages for each chunk.
@@ -72,12 +71,10 @@ const routes = compose(
   withView((req, context) => {
     // Check if the current page is an index page by comparing the remaining
     // portion of the URL's pathname with the index page paths.
-    let isViewingIndex = req.path === "/" || /^\/page\/\d+\/$/.test(req.path);
+    // let isViewingIndex = req.path === "/" || /^\/page\/\d+\/$/.test(req.path);
 
     // Render the application-wide layout
-    return (
-      <BlogLayout blogRoot={context.blogRoot} isViewingIndex={isViewingIndex} />
-    );
+    return <BlogLayout blogRoot={context.blogRoot} />;
   }),
   mount({
     // The blog's index pages go here. The first index page is mapped to the

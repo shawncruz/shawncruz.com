@@ -2,7 +2,6 @@ import React from "react";
 import ArticleSummary from "./ArticleSummary";
 import Pagination from "./Pagination";
 import styles from "./BlogIndexPage.module.css";
-import MenuItems from "./MenuItems";
 
 function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (

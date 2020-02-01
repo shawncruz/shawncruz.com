@@ -1,14 +1,12 @@
 import React from "react";
-import { View, Link, NotFoundBoundary, useLoadingRoute } from "react-navi";
+import { View, Link, NotFoundBoundary } from "react-navi";
 import NotFoundPage from "./NotFoundPage";
 import HamburgerMenu from "./HamburgerMenu";
 import styles from "./BlogLayout.module.css";
 import ShawnDotReversedSvg from "../assets/images/shawn_dot_reversed.svg";
 import MenuItems from "./MenuItems";
 
-function BlogLayout({ blogRoot, isViewingIndex }) {
-  let loadingRoute = useLoadingRoute();
-
+function BlogLayout({ blogRoot }) {
   return (
     <div className="container">
       <header className={styles.top}>

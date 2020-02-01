@@ -6,6 +6,7 @@ import MenuItems from "./MenuItems";
  * Made by Erik Terwan
  * 24th of November 2015
  * MIT License
+ *
  * Modified by Shawn Cruz for the purposes of shawncruz.com
  */
 const HamburgerMenu = ({ blogRoot }) => {

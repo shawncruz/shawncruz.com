@@ -1,8 +1,18 @@
-  .title {
+@font-face {
+  font-family: CrimsonText;
+  src: url("../assets/fonts/CrimsonText-Regular.ttf");
+}
+
+@font-face {
+  font-family: Karla;
+  src: url("../assets/fonts/Karla-Regular.ttf");
+}
+
+.title {
   font-size: 42px;
+  font-weight: 700;
   font-style: italic;
   font-variant: normal;
-  font-weight: 700;
   letter-spacing: -5px;
   position: relative;
 }
@@ -12,13 +22,7 @@
   text-decoration: none;
 }
 
-@font-face {
-  font-family: CrimsonText;
-  src: url("../assets/fonts/CrimsonText-Regular.ttf") format("truetype");
-}
-
-.articlesList,
-.articlesList > li {
+.articlesList, .articlesList>li {
   list-style: none;
   padding: 0;
 }
@@ -27,25 +31,20 @@
   margin-top: 7rem;
 }
 
-@font-face {
-  font-family: Karla;
-  src: url("../assets/fonts/Karla-Regular.ttf") format("truetype");
-}
-
 .container {
   box-sizing: border-box;
   display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
   flex-direction: column;
-  -webkit-box-flex: 1;
-  -ms-flex-positive: 1;
   flex-grow: 1;
   padding: 0.5em 3vw;
   margin-left: auto;
   margin-right: auto;
   max-width: 790px;
   font-family: Karla;
+  -ms-flex-positive: 1;
+  -ms-flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-direction: column;
 }
 
 .container h3 {
@@ -61,11 +60,15 @@
   float: right;
 }
 
+.footer {
+  border-top: 1px solid #eee;
+  padding-top: 2.5em;
+}
+
 @media only screen and (max-width: 800px) {
   .flexItem {
     width: 100%;
   }
-
   .title {
     padding-top: 0px;
     padding-left: 50px;
@@ -83,17 +86,13 @@
     background-size: cover;
     position: relative;
   }
-
   .divider:after {
-    content: ""; /* This is necessary for the pseudo element to work. */ 
-    display: block; /* This will put the pseudo element on its own line. */
+    content: "";
+    /* This is necessary for the pseudo element to work. */
+    display: block;
+    /* This will put the pseudo element on its own line. */
     width: 100%;
     padding-top: 20px;
     border-bottom: 0.5px solid #B933AD
   }
-}
-
-.footer {
-  border-top: 1px solid #eee;
-  padding-top: 2.5em;
 }

@@ -1,8 +1,8 @@
 html, body {
   /* needed because hiding the menu on the right side is not perfect,  */
-  overflow-x:hidden;
+  overflow-x: hidden;
   position: relative;
-} 
+}
 
 .container {
   margin: 0 auto;
@@ -10,7 +10,7 @@ html, body {
   padding: 0rem 3rem;
 }
 
-header.top {  
+header.top {
   height: 100%;
   padding: 1em 3vw;
   background-color: black;
@@ -22,33 +22,27 @@ header.top {
     position: fixed;
     text-align: center;
   }
-
   main {
     margin-left: 20vw;
     padding-top: 2.5em;
     padding-bottom: 2.5em;
   }
-
   .menuItems ul {
     margin-top: 20px;
   }
-
   .logo {
     margin: 0px 0 1.66667em;
   }
-
   .title {
     padding-bottom: 3.33333em;
     padding-top: 3.33333em;
   }
-
 }
 
 @media only screen and (max-width: 800px) {
   .menuItems {
     display: none !important;
   }
-
   main {
     padding-top: 1.5em;
     padding-bottom: 1.5em;

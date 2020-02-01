@@ -2,14 +2,12 @@ import React from "react";
 import { Link, useCurrentRoute, useView } from "react-navi";
 import { MDXProvider } from "@mdx-js/react";
 import styles from "./BlogPostLayout.module.css";
-import styles2 from "./BlogIndexPage.module.css";
-import MenuItems from "./MenuItems";
 import ArticleTimestamp from "./ArticleTimestamp";
 
 function BlogPostLayout({ blogRoot }) {
   let { title, data, url } = useCurrentRoute();
   let { connect, content, head } = useView();
-  let { MDXComponent, readingTime } = content;
+  let { MDXComponent } = content;
 
   // The content for posts is an MDX component, so we'll need
   // to use <MDXProvider> to ensure that links are rendered
@@ -17,8 +15,8 @@ function BlogPostLayout({ blogRoot }) {
   return connect(
     <>
       {head}
-      <article className={styles2.container}>
-        <div className={styles2.flexItem}>
+      <article className={styles.container}>
+        <div className={styles.flexItem}>
           <header className={styles.header}>
             <ArticleTimestamp meta={data} />
             <h1 className={styles.title}>

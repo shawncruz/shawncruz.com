@@ -1,7 +1,7 @@
 @font-face {
     font-family: Karla;
-    src: url("../assets/fonts/Karla-Regular.ttf") format("truetype");
-  }
+    src: url("../assets/fonts/Karla-Regular.ttf");
+}
 
 .menuItems ul {
     border-bottom: 1px solid rgb(61, 61, 61);
@@ -10,18 +10,18 @@
     margin-top: 0;
 }
 
-.menuItems ul > li { 
+.menuItems ul>li {
     font-family: Karla;
     border-top: 1px solid rgb(61, 61, 61);
     padding: 0.3em 0;
 }
 
-.menuItems ul > li > a {
+.menuItems ul>li>a {
     color: rgb(197, 197, 197);
     text-decoration: none;
 }
 
-.menuItems ul > li > a:hover {
+.menuItems ul>li>a:hover {
     color: white;
 }
 
@@ -37,7 +37,6 @@
     fill: white;
 }
 
-.menuItems .socialLinks > a {
+.menuItems .socialLinks>a {
     margin: 0 10px 0.5em;
 }
-
