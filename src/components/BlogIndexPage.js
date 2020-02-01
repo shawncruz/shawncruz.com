@@ -5,6 +5,7 @@ import styles from "./BlogIndexPage.module.css";
 import MenuItems from "./MenuItems";
 
 function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
+  document.title = "Home";
   return (
     <>
       <div className={styles.container}>
