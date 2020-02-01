@@ -36,7 +36,7 @@ ul {
   
   width: 60px; /* Change this to whatever width you want. */
   padding-top: 20px; /* This creates some space between the element and the border. */
-  border-bottom: 0.5px solid red; /* This creates the border. Replace black with whatever color you want. */
+  border-bottom: 0.5px solid #B933AD ; /* This creates the border. Replace black with whatever color you want. */
 }
 
 .header .title > a {
@@ -250,7 +250,7 @@ img {
 }
 
 .content :global(.token.operator) {
-  color: red;
+  color: #B933AD ;
 }
 
 .content :global(.token.tag),

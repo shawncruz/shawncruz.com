@@ -8,8 +8,8 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (
     <>
       <div className={styles.container}>
-        <div class={styles.heroImage}></div>
-        <div className={styles.latest}></div>
+        <div class={styles.bannerImage}></div>
+        <div className={styles.divider}></div>
         <div className={styles.flexItem}>
           <ul className={styles.articlesList}>
             {postRoutes.map(route => (
