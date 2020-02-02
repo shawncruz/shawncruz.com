@@ -47,7 +47,11 @@ html, body {
 }
 
 :global a {
-  color: var(--primary-color);
+  color: rgb(82, 29, 78);
+}
+
+:global h1>a, :global h2>a, :global h3>a {
+  color: black;
 }
 
 :global a:hover {
