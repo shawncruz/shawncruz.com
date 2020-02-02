@@ -1,65 +1,69 @@
-import styles from './document.module.css'
-import phpBlog2016Png from './2016-php-blog.png'
-
-<p>
-<img className={styles['photo']} src="https://media.giphy.com/media/1xOcaHdCWmZl3eA9K2/giphy.gif"/>
-<figcaption>
-Me, putting endless finishing touches on my personal website
-</figcaption>
-</p>
+import styles from "./document.module.css";
+import PhpBlog2016 from "./2016-php-blog.png";
 
 # Background
 
-This has been in the making for about 3 years now. Ever since I graduated college, I have made numerous attempts to create a personal website. 
-Each was an attempt at reinventing the wheel. I felt that building something from the ground up was the most genuine way to build a personal website. But just because something isn’t built from scratch, doesn’t mean there isn’t ingenuity in the way it's pulled together. The same thinking should apply to building a personal website. 
+This has been in the making for about 3 years now. Ever since graduating from college, I have made numerous attempts to create a personal website.
+Each time was an attempt at reinventing the wheel. I felt that building something from the ground up was the most genuine way to build a personal website. But just because something isn’t built from scratch, doesn’t mean there isn’t ingenuity in the way it's pulled together.
 
-Tools for easily building websites have been available to the public for a few decades. Sites like AngelFire, Tripod, and GeoCities made it possible for nearly anyone with internet access to leave a digital footprint. Today, there are more powerful website building tools such as Squarespace, WordPress, and Wix. When I set out to build my personal website I wanted to make something without utilizing any of these tools. I assumed that building something from scratch was a rite of passage to becoming an established software engineer. After finally launching my personal website, I realize this is not the case.
+Tools for easily building websites have been available to the public for a few decades. When I set out to build my personal website I wanted to make something without utilizing any of those tools. I assumed that building something from scratch was a rite of passage to becoming an established software engineer. After finally launching my personal website, I realize this is not the case.
 
 In honor of my first post, I wanted to recount some of the attempts that led me here.
 
-# 2016: Dynamic Blog Builder
+# Flashback to 2016
 
-I set out to build a dynamic blog builder in hopes that this would help launch my personal website, and many others. I took inspiration from sites like Blogger, Wikipedia, and Tumblr; and as such, wanted to build something just as ambitious. I wanted to build something abstract enough so that anybody could reuse it. Having just graduated from college, it only felt nature to make something that was perfectly engineered for every use case. However, my primary goal was to build a personal website for _me_, not the rest of the world. I bogged myself down with the endless possiblilities on how I could make the experience more customized.
+During my last semester at college, I took a class in cloud computing. The first project we were assigned was to build a wiki that supported relatively large amounts (~10k requests) of simultaneous updates to various pages. This project forced us to utilize "industry standard" practices to handle load at a "real-world" scale. This was also my first time building a CRUD application using "current" technologies. In particular, I gained a lot of experience with client-side scripting and designing a UI. I built what I thought was a clean interface for creating, editing, and deleting wiki posts.
+
+This experience sparked a deep interest in what people call "Front-end Development". After graduating from college, I knew that I wanted to build a personal website where I could share all of the experience I had or would have gained in my career as a software engineer. My first attempt at building a personal website was inspired by the wiki app that I had built. After all, a wiki page and a blog have very similar functionalities and designs. This allowed me to utilize a lot of the same source and styling. Unfortunately, I also maintained the mindset that my personal website needed to be scalable and extensible in order to be ready for the real world.
+
+I set out to build a dynamic blog builder in hopes that this would help launch my personal website, and anyone else who wanted to build their own personal website. Since I had taken inspiration from that cloud computing class in college, I wanted to build something just as ambitious for my first real-world product. I wanted to build something abstract enough so that anybody could use it. After just having graduated from college with zero real-world experience, it only felt nature to make something that was perfectly engineered for every use case. However, my primary goal was to build a personal website for _me_--not the rest of the world. I got bogged down with the endless possibilities on how I could make the experience more customizable.
 
 ### Basic Architecture
 
-The frontend client was built using PHP, JQuery, and Twig. It handled reading and editing blog posts from a user-specific editor. The backend API was built also using PHP connecting to a MySQL database. I chose this stack due to having built something very similar to this in college and ported it over with ease.
+From a high-level, I designed the application using a client-server model.
+The frontend client was built using PHP, JQuery, and Twig. I used a Jekyll theme to make the UI cleaner. It handled reading and editing blog posts from a user-specific editor. The backend API was built also using PHP connecting to a MySQL database. This stack was a direct copy of the wiki application I had built in college.
 
-Within a couple of days, I had this:
-<p>
-<img src={phpBlog2016Png} className={styles['photo']} alt="logo"/>
-<figcaption>
-Yes, that’s a big search bar for all of 1 post(s)
-</figcaption>
-</p>
+Within a couple of days, I had a working application:
 
-As soon as I had the thing working, I got bogged down in adding support for a home-brewed wiki markdown parser. I figured that if I couldn’t build blog pages without implementing a sophisticated tool like [stackedit.io](https://stackedit.io/), then it wasn’t ready for the world. I eventually abandoned the project shortly after. There were no deadlines, so there was no reason for me to keep pushing forward.
 
-# 2017: React
+<img src={PhpBlog2016} className={styles["photo"]} alt="logo" />
+<figcaption>Yes, that’s a big search bar for all of 0 post(s) that were never published</figcaption>
 
-I learned about React in mid 2017, and wanted to make a second attempt at building a personal website with it. I found numerous boilerplate options I could bootstrap the new version of my personal website with, such as [create-react-app](https://github.com/facebook/create-react-app), [bloggie](https://github.com/lestard/bloggie), and [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate). Most of them were bloated for my purposes, including support for technologies such as GraphQL. I bootstrapped implementations with various boilerplates, but each time I reached a working product, I got bogged down again with adding sophisticated support for tangential features. I constantly abandoned implementations because I couldn’t support easily adding photos, formatting code snippets, and editing blog posts. I think a lot of it had to do with the quest for perfection. Ironically, what I had at that point was sufficient for _my_ personal website.
 
-# 2018: Simplicity is Key
+Soon after I started adding support for a home-brewed wiki markdown parser. I figured that if I couldn’t build blog pages without implementing a sophisticated tool like [stackedit.io](https://stackedit.io/), then it wasn’t ready for real-world use. I got bogged down in specific nuances of building a wiki-parser and eventually abandoned the project altogether. There were no deadlines, so there was no reason for me to keep pushing forward.
 
-It was not until 2018 that I learned I only needed a fraction of the infrastructure I had built. A coworker of mine told me that he his blog ran on static HTML. All of his posts were stored as raw HTML strings in text files. The concept of having no client/server relationship and no database in a web application was foreign to me. I thought every legitimate application today required a database.
+# Fast-forward a Year
 
-# 2019: Success
+My first job out of college used a combination of Backbone.js, jQuery, and in some places JSFs for their front-end stack. None of these technologies inspired me to revisit my personal website project.
+
+In early 2017, at my next job, I discovered React.js. While I was hired as a back-end engineer, I quickly gravitated towards doing front-end work. In order to prove to myself and my co-workers that I was capable of not only doing back-end work, but also front-end work, I completed the take-home test my company would send to front-end engineering candidates. The take-home test was based around building out a type-ahead feature out of a React.js template app. I quickly became interested by how straight-forward and elegant developing in React was compared to my prior experience.
+
+After completing that take-home test, I was on a roll. My interest in rebuilding my entire personal site in React was in full effect. I found numerous boilerplate options I could bootstrap the new version with, such as [create-react-app](https://github.com/facebook/create-react-app), [bloggie](https://github.com/lestard/bloggie), and [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate). Most of them were a bit bloated for my simple use-case. I bootstrapped implementation after implementation with various boilerplates, but each time I reached a working product, I got bogged down again with adding sophisticated support for tangential features. I constantly abandoned implementations because I couldn’t support easily adding photos, formatting code snippets, and editing blog posts. A lot of it had to do with my quest for perfection. Ironically, what I had at that point was sufficient for _my_ personal website.
+
+I believe that a separate, but equally important reason for my prior failures was in large part due to being afraid of putting something out into the world for everyone to see and critique. I also had serious imposture syndrome which made me feel like anything that I published would be inherently wrong or misguided.
+
+# Simplicity Is Key
+
+It was not until 2018 that I realized I only needed a fraction of the infrastructure I was trying to build. A co-worker of mine told me that his blog ran entirely on server-side rendered, static HTML strings inside text files. The concept of not using a client-server model, with no database, was completely foreign to me. I had thought of such types of models to be archaic or trivial. But it was practical; and simplicity and practicality trump unnecessarily rich feature sets and complexity.
+
+# Successful Launch
 
 I got realistic about my website’s requirements:
+
 - _I_ would be the only person adding content
-- Content would be mostly _static_ HTML 
-- Everything happen _client-side_
+- Content would be mostly _static_ HTML
+- Everything would happen _client-side_
 
-I stopped thinking about how I could apply all the new and interesting technologies, patterns, and ideas I wanted to learn about to building a personal website, and started thinking about the actual content I could post there. 
+I stopped thinking about how I could apply all the cool new technologies, patterns, and ideas I wanted to learn about to building my personal website, and started thinking about the actual content I would post there.
 
-This year I discovered [create-react-blog](https://github.com/jamesknelson/create-react-blog), which checked off all these boxes. Its entire workflow for creating and deploying blog posts was the simplest I’d seen. `create-react-blog` requires minimal user setup before deploying. Having a nearly out of the box solution allowed me to focus on a step I had never reached before: deploying something to the web.
+I recently discovered [create-react-blog](https://github.com/jamesknelson/create-react-blog), which checked off all of my requirements. Creating a blog post from start to finish was simple. Having a clean, out-of-the-box solution helped remove a lot of the issues and anxieties I'd had before. I was not able to focus on actually deploying my website and creating my own content.
 
-I was fine with not having built the application from scratch because `create-react-blog` gives me enough flexibility to feel like I’m still in control of how the application functions. The process for writing and deploying posts is technical as well. I’ve even since overhauled the entire design of the website to feel like my own.
+`create-react-blog` gives me the flexibility and tooling to add my own flavor to a template. The result is a design that reflects who I am.
 
-### Uncharted Territory
+### Deploying My Personal Website
 
-Having a functioning personal website was only part of the challenge. I still needed a domain name and a place to host my personal website. I was lucky enough to be able to purchase  `shawncruz.com`  through SiteGround. I deployed my personal website to a DigitalOcean Droplet. Both of these processes were relatively painless. I am eager to see how this setup continues to work for me.
+Having a personal website locally was only part of the challenge. I still needed to deploy it to the web. In my next post, I will talk in more depth on how I deployed my personal website.
 
 # Next Steps
 
-I plan to continue improving the design and appearance of my personal website. I place high importance on not only the content I post, but also the way that it’s presented visually. Most importantly, I want to keep coming up with ideas to write about. I aim to accumulate enough decent content so that I can eventually put this on my professional resume.
+I plan to continue improving the design and appearance of my personal website, while turning out content that I believe is meaningful and representative of me. I place high importance on not only the content I post, but also the way that it’s presented visually. I aim to accumulate enough content to someday showcase this on my professional resume.
