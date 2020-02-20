@@ -47,7 +47,7 @@ html, body {
 }
 
 :global a {
-  color: rgb(82, 29, 78);
+  color: rgb(5, 3, 129);
 }
 
 :global h1>a, :global h2>a, :global h3>a {
@@ -55,7 +55,8 @@ html, body {
 }
 
 :global a:hover {
-  text-decoration: none;
+  color: rgb(0, 0, 5);
+  background-color: rgb(251, 255, 0);
 }
 
 :global p, :global pre, :global ul, :global ol {

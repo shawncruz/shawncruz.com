@@ -129,6 +129,10 @@ img {
   margin: inherit;
 }
 
+.content > p:first-child {
+  margin-top: 1.75rem;
+}
+
 /**
 * Based on copypasta from Remy Bach and Sarah Drasner
 */

@@ -1,110 +1,242 @@
-import styles from './document.module.css'
+In this post I discuss in depth how I quickly deploy changes to my personal website. 
 
-# Intro
+# Initial Setup
 
-This is the first time I've ever deployed an application to the web. After completing my personal website locally, I needed to figure out a way to deploy it. 
-
-The approach I took to launching my personal website was to host something first, then customize it later. That “something” was an out-of-the-box solution called [create-react-blog](https://github.com/jamesknelson/create-react-blog), and it took me all of 5 minutes to build and deploy. Since all pages are client-side rendered, the entire application gets deployed to the browser and requires no further complexity than that. I created new repository on my Github called [shawncruz.com](https://github.com/shawncruz/shawncruz.com) so that I could easily make changes to and distribute my personal website, using the `create-react-blog` template as a base. 
-
-# Setup
-
-I bought my personal website’s domain name through [SiteGround](https://www.siteground.com/kb/how_can_i_purchase_from_siteground_a_new_domain_name/). I host my personal website on a 5GB RAM Droplet running Ubuntu 18.04 and am using NGINX to serve it. That’s about it for the initial setup. 
-
-The following great documentation helped me get my template deployed and served to users in very little time:
+First, I'd like to briefly list the services I use for hosting my personal website. I'm choosing to gloss over the exact steps that I followed in order to set everything up since these tasks are pretty straight-forward and well-documented. Below are some of the tutorials I followed:
+- [Registering a Domain Name With SiteGround](https://www.siteground.com/domain_names.php)
+- [How to Create a Droplet](https://www.digitalocean.com/docs/droplets/how-to/create/)
+- [How to SSH Into a Droplet](https://www.digitalocean.com/docs/droplets/how-to/connect-with-ssh/)
+- [Ubuntu Server Setup Steps](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04)
 - [Installing NGINX on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04)
-- [Automating Git Deployment w/Hooks](https://gist.github.com/noelboss/3fe13927025b89757f8fb12e9066f2fa)
-- [Enabling HTTPS with Certbot](https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx.html)
 
-# Deployment
+As mentioned in my previous post, I used the [create-react-blog](https://github.com/jamesknelson/create-react-blog) template as a basis from which I built my personal website. A large portion of my quick deployments heavily depends on how this template. For those following along, the instructions will be a lot simpler if you're using a React application with a similar configuration.
 
-Deploying my personal website to my Droplet was pretty simple at first. I cloned the repository in my home directory, built the application, then pointed my NGINX server root directory at the `/build` directory. This seemed to be a good idea, and is probably sufficient for a small, one-person project, but is generally looked at as bad practice. Instead, a [bare repository](https://www.saintsjd.com/2011/01/what-is-a-bare-git-repository/) would be more appropriate since files should never be edited and pushed to `master` from the production server. So, I replaced my old non-bare repository with a bare repository. 
+# Deployment Pipeline
 
-Now I needed some way to push new changes to the server remotely. I found this extremely useful [gist page](https://gist.github.com/noelboss/3fe13927025b89757f8fb12e9066f2fa) which uses a `post-receive` hook to accomplish this. After some tweaking, my post-receive hook looks like this:
+The remainder of this post focuses on how to set up a deployment pipeline for a small-scale React web application. This tutorial is based on how my deployment pipeline is set up for my personal website.
 
+### Prerequisites
+
+This tutorials assumes that you already have the following set up:
+- Virtual machine running Ubuntu
+- Web server running
+- React web application
+
+# Implementation Overview
+
+From a high level, our deployment pipeline will use a bare repository with a `post-receive` hook to deploy changes to our React web application.
+
+## Bare Repository
+
+The first thing we need to do in order to set up our deployment pipeline is to create a bare repository on our virual machine.
+
+### What is a Bare Repository?
+
+A bare repository acts as a centralized repository, encapsulated away from `master`, where developers can collaboratively push changes. This is distinct from a typical remote branch, because a bare repository doesn't have a working tree, and therefore cannot function as a place where changes can be checked in and commit. It is also important to not pull changes from a bare repository, because a bare repository conventionally indicates that a repository should only receive changes.
+
+It's worth noting that a non-bare repository can also receive commits, similar to a bare repository, but it generally also has a workspace. Repositories with workspaces that also receive commits remotely can also block incoming changes or cause unwanted merge conflicts if the workspace is dirty or has diverged from the last time change were pushed.
+
+In general though, there is no reason to pull changes from a remote repository. This would require a user to manually SSH into the machine, pull the correct changes, then rebuild the application. Below, I explain how to automate these manual steps.
+
+### Create a Bare Repository
+
+Creating a bare repository is relatively straight forward. From your virtual machine:
+
+```bash
+# Create a directory where your bare repository will be located, then change into that directory
+$ mkdir <bare-repo> && cd "$_"
+# Initialize a new bare repository
+$ git init --bare
+```
+
+### Add Remote to Bare Repository
+
+On your local machine, add a new remote pointing to your bare repository, named `production` to distinguish it from your standard remote `origin`:
+```bash
+# This remote can be called anything you think would correctly classify it
+$ git remote add production <server-url>:<bare-repo>
+# Check to make sure that your remote looks good:
+$ git remote -v
+# Should output something like:
+production <server-url>:<bare-repo> (fetch)
+production <server-url>:<bare-repo> (push)
+```
+
+This indicates that you can fetch changes from and push changes to that repository.
+
+Our bare repository will only act as a means by which to track the git commit history. Our changes will be checked out in a separate folder--from where they'll be served. The benefit of this is cleanliness, security, and a matter of separating any git-related data from the actual project files our application is built from.
+
+### Add Web Root
+
+Add a directory from which to checkout changes. The web server should point to this directory when serving our website. We'll add this directory in the `/var/www` directory of our machine:
+```bash
+# Assumes that you set up server blocks pointing to this directory
+$ mkdir /var/www/<web-app>
+```
+
+This directory will come in handy in the next portion, when we checkout changes from our bare repository to this web root directory.
+
+# post-receive Hook
+
+We need a way for our bare repository to receive changes, then rebuild and deploy those changes to our web root directory.
+
+To accomplish this, we use a `post-receive` hook. A `post-receive` hook is a git hook that triggers downstream processes _after_ an incoming push has been received by a repository. For this reason we utilize this hook for rebuilding and redeploying our React web application.
+
+### Creating a post-receive Hook
+Since the `post-receive` hook is not part of the standard git hooks, we need to create one within our bare repository: 
+```bash
+$ cd hooks && touch post-receive
+# Then make it executable
+$ chmod +x  post-receive
+```
+
+Inside the `post-receive` hook, let's add:
 ```bash
 #!/bin/bash
 
+GIT_DIR=/path/to/<bare-repo>
+WORKING_TREE=/var/www/<web-app>
+
 # MIT © Sindre Sorhus - sindresorhus.com. GIST: https://gist.github.com/sindresorhus/7996717
-# Function to run when this repo receives a new commit. Utilized to prevent running `npm install` unnecessarily.
-changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
+changed_files="$(git diff-tree -r --name-only --no-commit-id HEAD^ HEAD)"
 check_run() {
-	echo "$changed_files" | grep --quiet "$1" && eval "$2"
+	echo "$changed_files" | grep -x -q "$1" && eval "$2"
 }
 
-# Explicitly add nvm to path so that we can use it below. TODO: This can probably be removed once
-# the node versioning hack below is solved.
-PATH="/usr/local/bin:$PATH"
-if [ -f $HOME/.nvm/nvm.sh ]
-then
-  . $HOME/.nvm/nvm.sh
-  PATH="$HOME/.nvm/versions/node/$(nvm current)/bin:$PATH"
-fi
-
+# Inspired by http://mattfairbrass.com/2015/08/25/push-to-deploy-to-production-with-git/
 while read oldrev newrev ref
 do
-    if [[ $ref =~ .*/master$ ]];
+    if [[ $ref =~ refs/heads/master ]];
     then
         echo "Master ref received. Deploying master branch to production…"
-        git --work-tree=/var/www/shawncruz.com --git-dir=/root/personal-blog checkout -f
-	cd /var/www/shawncruz.com;
-	# Use node version 10.16.0 or else the build will break. TODO: figure out how to solve this.
-	echo $(eval "nvm use 10.16.0;")
-	echo $(eval check_run package.json "npm install";)
-	echo $(eval npm run build;)
+        git --work-tree=WORKING_TREE --git-dir=GIT_DIR checkout -f
+        cd WORKING_TREE;
+        echo $(eval check_run package.json "npm install";)
+        echo $(eval npm run build;)
     else
         echo "Ref $ref successfully received. Doing nothing: only the master branch may be deployed on this server."
     fi
 done
 ```
 
-There are quite a few hacks in the script, but overall this was very simple to plug and play. Basically, what happens in this `post-receive` hook is when new changes are pushed to and received by this bare repository, it force overwrites all files in the `var/www/shawncruz.com`  directory, and rebuilds and deploys my personal website. 
+There is a lot to unpack here, so let's go over this script line by line to understand what it is actually doing.
 
-Pushing to this bare repository remotely first requires adding a new remote repository pointing directly at the machine and location of the bare repository (i.e. `git remote add production username@ip.address:bare-repository.git`). Now, whenever I have changes I want to deploy to production, redeploying is as simple as running `git push origin production`.
-
-# Pricing
-In total, I spend $1.33/month for the domain name and $5.00/month for the Droplet, which brings my total spending to **$6.33/month**.
-
-# Next Steps
-
-Since my main mission was to get something out into production that was uniquely my own, I took some shortcuts to speed things up. Next, I plan on making some improvements across the board. Here are a couple of categories I plan on improving in the future:
-
-### CSS Cleanup
-I swept a lot of inconsistencies and sloppiness under the rug so that my personal website would look decent. I used styles for specific components for other components, instead of moving shared styles into a more global file.
-For example, in BlogPostLayout.js, I use styles from BlogIndexPage as well:
-```javascript
-import styles from "./BlogPostLayout.module.css";
-import styles2 from "./BlogIndexPage.module.css";
-// ...
-<article className={styles2.container}>
-// ...
-<footer className={styles.footer}>
-```
-This should be an easy fix, and will make my components a lot more readible.
-
-### More consistent branding
-
-I want a consistent feel across my entire personal website. This means consistent color schemes, logos, wording, and UI components. This will be part of the CSS Cleanup, but I also want to further define more clearly the color palette and component styling to use site-wide.
-
-### Streamline deployment
-
-My `post-receive` hook has a couple of hacks that deal with library dependency failures on install. I would like to get rid of this confusing logic. See here for specifics:
+As mentioned earlier, this script will run after changes have successfully been received by the repository. While the `post-receive` hook doesn't take any arguments, it receives info from standard input and can be read as such:
 ```bash
-# Explicitly add nvm to path so that we can use it below. TODO: This can probably be removed once
-# the node versioning hack below is solved.
-PATH="/usr/local/bin:$PATH"
-if [ -f $HOME/.nvm/nvm.sh ]
-then
-  . $HOME/.nvm/nvm.sh
-  PATH="$HOME/.nvm/versions/node/$(nvm current)/bin:$PATH"
-fi
-# …
-# Use node version 10.16.0 or else the build will break. TODO: figure out how to solve this.
-	echo $(eval "nvm use 10.16.0;")
+while read oldrev newrev ref
+do
+# ...
+done
 ```
 
-### Remove all dependencies from template 
+Breaking down each item read from standard input:
+- `oldrev`: References the previous commit's SHA-1
+- `newrev`: References the incoming commit's SHA-1
+- `ref`   : Name of the ref that's being updated.
 
-This is part of Streamline Deployment, but also includes removing all dependencies from `create-react-blog` (i.e. all Navi-related libraries). Reason being that I believe they come with some mental overhead and are overkill for my simple use-case.
+Since the `post-receive` hook runs after all refs have been updated, it's important to read them in a while loop so that all of them are processed. For the purposes of this tutorial, we focus solely on a single ref so that we can build from a single commit history. To do so, we must wrap our logic in an if-statement to ignore unwanted refs:
 
-### Issue Tracker
-I have a bunch of ideas on how to improve my personal website. An issue tracker would be a good way to put thoughts to tasks, which would enable me to prioritize them in a more tangible way. Github has an issues section for each repository, so this will be a good place to start.
+```bash
+# Checks if the ref that was read from standard input is the master branch, which is where our upstream changes will be pushed. 
+if [[ $ref =~ refs/heads/master ]];
+```
+
+Next, we echo some feedback to the client so that they know things are working as expected:
+```bash
+echo "Master ref received. Deploying master branch to production…"
+```
+
+ Then, we checkout the new changes into our `WORKING_TREE` in our web root from our base repository:
+
+```bash
+# This command checks out the changes from our repository (GIT_DIR) in our web root (WORKING_TREE)
+$ git --work-tree=WORKING_TREE --git-dir=GIT_DIR checkout -f
+```
+
+Next, we rebuild the app by navigating to it's location in the filesystem:
+```bash
+cd WORKING_TREE;
+echo $(eval check_run package.json "npm install";)
+echo $(eval npm run build;)
+```
+
+We run the `check_run` function first to check if `package.json` has been updated. This check saves us from re-installing versions of dependencies that have already been installed. In reality this naively checks if the last commit contained changes to `package.json`--not actually checking if any dependencies were modified.
+
+Examining the `check_run` function a bit closer:
+```bash
+changed_files="$(git diff-tree -r --name-only --no-commit-id HEAD^ HEAD)"
+```
+Each argument plays a role here:
+- `-r`: Examines subtrees in the top-level repo for changes
+- `--name-only`: Shows name of files that were changed between the two commits
+- `--no-commit-id`: Suppresses commit ID output
+- `HEAD`: Refers to the commit that's currently checked out (see: `cat .git/HEAD`). In the context of this script, this value will always be `refs/heads/master`.
+- `HEAD^`: Refers to the commit immediately before `HEAD`
+
+Putting it all together, `changed_files` will output the names of the files that were added, edited, or deleted in the last commit.
+
+Let's see how `changed_files` is used in `check_run`:
+```bash
+check_run() {
+	echo "$changed_files" | grep -x -q "$1" && eval "$2"
+}
+```
+
+`check_run` pipes the output from `changed_files` into the next portion of the script:
+
+```bash
+grep -x -q "$1" && eval "$2"
+```
+
+The left-hand side of double ampersands will `grep` the list of changed files for the first argument passed to the function (e.g. `package.json`). Taking a look at that a little closer:
+
+```bash
+grep -x -q "$1"
+```
+- `x`: makes sure that the first argument is an exact match so that we don't match on a substring of the file we are searching for (e.g. grepping for `test.txt` could match on `another-test.txt` and `test.txt`)
+- `-q`: suppresses output from any matches
+
+`grep` will return a zero exit code if a match is found, otherwise it will return a non-zero exit code. Since a zero exit code is mapped to true, the double ampersand in between the two statements acts as a guard from evaluating the second portion of the script if the string is not found.
+
+If a match is found we evaluate the right-hand side of the double ampersand:
+
+```bash
+eval "$2"
+```
+
+This executes the second argument that gets sent to this function (e.g. `npm install`), which is presumably some type of function call.
+
+Examining how this function is utilized in our `post-receive` hook:
+
+```bash
+echo $(eval check_run package.json "npm install";)
+```
+
+We check to see if any changes have been made to the `package.json` file, and if so, run `npm install`.
+
+The next line:
+
+```bash
+echo $(eval npm run build;)
+```
+
+Will run the `build` script specified in `package.json`. This is targeted to what I have in my react application, but can be swapped for any other command that builds your application.
+
+Each commands output is echoed to the client so that progress, success, or failure can be tracked.
+
+The last part of the script is the `else` block which catches and relays any updated refs that we are not interested in and logs that to the client:
+
+```bash
+else
+        echo "Ref $ref successfully received. Doing nothing: only the master branch may be deployed on this server."
+```
+
+That's all for the `post-receive` hook script. 
+
+## Conclusion
+
+Quickly recapping the deployment pipeline we've just implemented, we created a bare repository to which our changes can be push, and a `post-receive` hook that will checkout the incoming changes to the web root directory, the rebuild the web application.
+
+In order to verify that this deployment pipeline works, try pushing a local change to your bare repository. The messages echoed back to you should indicate success or failure. Upon success try refreshing your live web page to see the change in realtime! 
+
+In practice, I've found this to be extremely useful for a single developer. There's something very satisfying--and perhaps potentially dangerous--about being able to deploy changes so quickly to the web. While this method of development works for me, I'm curious to see if it resonates with anyone else.
