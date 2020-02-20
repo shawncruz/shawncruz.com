@@ -19,6 +19,7 @@
 .menuItems ul>li>a {
     color: rgb(197, 197, 197);
     text-decoration: none;
+    background-color: transparent;
 }
 
 .menuItems ul>li>a:hover {
@@ -39,4 +40,5 @@
 
 .menuItems .socialLinks>a {
     margin: 0 10px 0.5em;
+    background-color: transparent;
 }

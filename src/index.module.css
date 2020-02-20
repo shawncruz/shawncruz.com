@@ -50,13 +50,18 @@ html, body {
   color: rgb(5, 3, 129);
 }
 
+:global a:hover {
+  color: rgb(0, 0, 5);
+  background-color: rgb(251, 255, 0);
+}
+
 :global h1>a, :global h2>a, :global h3>a {
   color: black;
 }
 
-:global a:hover {
-  color: rgb(0, 0, 5);
-  background-color: rgb(251, 255, 0);
+:global h1>a:hover, :global h2>a:hover, :global h3>a:hover {
+  color: black;
+  background-color: transparent;
 }
 
 :global p, :global pre, :global ul, :global ol {
