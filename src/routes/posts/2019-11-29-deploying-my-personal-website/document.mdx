@@ -2,14 +2,14 @@ In this post I discuss in depth how I quickly deploy changes to my personal webs
 
 # Initial Setup
 
-First, I'd like to briefly list the services I use for hosting my personal website. I'm choosing to gloss over the exact steps that I followed in order to set everything up since these tasks are pretty straight-forward and well-documented. Below are some of the tutorials I followed:
+First, I'd like to briefly list the services I use for hosting my personal website. I'm choosing to gloss over the exact steps that I followed in order to set everything up because these tasks are pretty straight-forward and well-documented. Below are some of the tutorials I followed:
 - [Registering a Domain Name With SiteGround](https://www.siteground.com/domain_names.php)
 - [How to Create a Droplet](https://www.digitalocean.com/docs/droplets/how-to/create/)
 - [How to SSH Into a Droplet](https://www.digitalocean.com/docs/droplets/how-to/connect-with-ssh/)
 - [Ubuntu Server Setup Steps](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04)
 - [Installing NGINX on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04)
 
-As mentioned in my previous post, I used the [create-react-blog](https://github.com/jamesknelson/create-react-blog) template as a basis from which I built my personal website. A large portion of my quick deployments heavily depends on how this template. For those following along, the instructions will be a lot simpler if you're using a React application with a similar configuration.
+As mentioned in my previous post, I used the [create-react-blog](https://github.com/jamesknelson/create-react-blog) template as a basis from which I built my personal website. A large portion of my quick deployments heavily depends on how this template is configured. For those following along, the instructions will be a lot simpler if you're using a React application with a [similar configuration](https://github.com/shawncruz/shawncruz.com/blob/master/package.json).
 
 # Deployment Pipeline
 
@@ -17,61 +17,61 @@ The remainder of this post focuses on how to set up a deployment pipeline for a 
 
 ### Prerequisites
 
-This tutorials assumes that you already have the following set up:
-- Virtual machine running Ubuntu
-- Web server running
-- React web application
+This tutorials assumes the following are already set up:
+- [Virtual machine running Ubuntu](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04)
+- [Web server](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04)
+- [React web application](https://github.com/jamesknelson/create-react-blog)
 
 # Implementation Overview
 
-From a high level, our deployment pipeline will use a bare repository with a `post-receive` hook to deploy changes to our React web application.
+From a high level, the deployment pipeline will use a bare repository with a `post-receive` hook to deploy changes to a React web application.
 
 ## Bare Repository
 
-The first thing we need to do in order to set up our deployment pipeline is to create a bare repository on our virual machine.
+The first thing we need to do in order to set up the deployment pipeline is to create a bare repository on a virtual machine.
 
 ### What is a Bare Repository?
 
-A bare repository acts as a centralized repository, encapsulated away from `master`, where developers can collaboratively push changes. This is distinct from a typical remote branch, because a bare repository doesn't have a working tree, and therefore cannot function as a place where changes can be checked in and commit. It is also important to not pull changes from a bare repository, because a bare repository conventionally indicates that a repository should only receive changes.
+A bare repository acts as a centralized repository, encapsulated away from `master`, where developers can collaboratively push changes. This is distinct from a typical remote branch, because by default a bare repository doesn't have a working tree, and therefore cannot function as a place where changes can be checked in and commit. It is also important to not pull changes from within a bare repository, because a bare repository conventionally indicates that it should only receive changes.
 
-It's worth noting that a non-bare repository can also receive commits, similar to a bare repository, but it generally also has a workspace. Repositories with workspaces that also receive commits remotely can also block incoming changes or cause unwanted merge conflicts if the workspace is dirty or has diverged from the last time change were pushed.
+It's worth noting that a non-bare repository can also receive commits, similar to a bare repository, but it generally also has a workspace. Repositories with workspaces that also receive remote commits can also block incoming changes or cause unwanted merge conflicts if the workspace is dirty or has diverged from the last time changes were pushed.
 
-In general though, there is no reason to pull changes from a remote repository. This would require a user to manually SSH into the machine, pull the correct changes, then rebuild the application. Below, I explain how to automate these manual steps.
+In general though, there is no reason to pull changes from a remote repository. This would require us to manually SSH into the machine, pull the correct changes, then rebuild the application. Below, I explain how to automate these steps.
 
 ### Create a Bare Repository
 
-Creating a bare repository is relatively straight forward. From your virtual machine:
+Creating a bare repository is relatively straight forward. In our virtual machine running Ubuntu:
 
 ```bash
-# Create a directory where your bare repository will be located, then change into that directory
-$ mkdir <bare-repo> && cd "$_"
+# Create a directory where our bare repository will be located, then change into that directory
+$ mkdir <name-of-bare-repo> && cd "$_"
 # Initialize a new bare repository
 $ git init --bare
 ```
 
 ### Add Remote to Bare Repository
 
-On your local machine, add a new remote pointing to your bare repository, named `production` to distinguish it from your standard remote `origin`:
+On our local machine, add a new remote pointing to the bare repository we just created--I suggest naming it `production` to distinguish it from our standard remote `origin`:
 ```bash
-# This remote can be called anything you think would correctly classify it
-$ git remote add production <server-url>:<bare-repo>
-# Check to make sure that your remote looks good:
+# This remote can be called anything other than "origin"
+$ git remote add production <server-url>:<name-of-bare-repo>
+# Check to make sure that our remote looks good
 $ git remote -v
-# Should output something like:
-production <server-url>:<bare-repo> (fetch)
-production <server-url>:<bare-repo> (push)
+# Should output something like
+production <server-url>:<name-of-bare-repo> (fetch)
+production <server-url>:<name-of-bare-repo> (push)
 ```
 
-This indicates that you can fetch changes from and push changes to that repository.
+This indicates that we can fetch changes from and push changes to that repository.
 
-Our bare repository will only act as a means by which to track the git commit history. Our changes will be checked out in a separate folder--from where they'll be served. The benefit of this is cleanliness, security, and a matter of separating any git-related data from the actual project files our application is built from.
+Our bare repository will only act as a means of tracking the git commit history. Our changes will be checked out in a separate folder--from where they'll be served. The benefit of this is cleanliness, security, and a matter of separating any git-related data from the actual project files our application is built from.
 
 ### Add Web Root
 
-Add a directory from which to checkout changes. The web server should point to this directory when serving our website. We'll add this directory in the `/var/www` directory of our machine:
+From our virtual machine, add a directory from which to checkout changes. The web server should point to this directory when serving our website. We'll add this directory in the `/var/www` directory:
 ```bash
-# Assumes that you set up server blocks pointing to this directory
-$ mkdir /var/www/<web-app>
+# Assumes that we set up server blocks pointing to this directory
+$ mkdir /var/www/<name-of-web-app>
 ```
 
 This directory will come in handy in the next portion, when we checkout changes from our bare repository to this web root directory.
@@ -80,7 +80,7 @@ This directory will come in handy in the next portion, when we checkout changes 
 
 We need a way for our bare repository to receive changes, then rebuild and deploy those changes to our web root directory.
 
-To accomplish this, we use a `post-receive` hook. A `post-receive` hook is a git hook that triggers downstream processes _after_ an incoming push has been received by a repository. For this reason we utilize this hook for rebuilding and redeploying our React web application.
+To accomplish this, we use a `post-receive` hook. A `post-receive` hook is a git hook that triggers downstream processes _after_ incoming changes have been received by a repository. For this reason we utilize this hook for rebuilding and redeploying our React web application.
 
 ### Creating a post-receive Hook
 Since the `post-receive` hook is not part of the standard git hooks, we need to create one within our bare repository: 
@@ -94,8 +94,8 @@ Inside the `post-receive` hook, let's add:
 ```bash
 #!/bin/bash
 
-GIT_DIR=/path/to/<bare-repo>
-WORKING_TREE=/var/www/<web-app>
+GIT_DIR=/path/to/<name-of-bare-repo>
+WORKING_TREE=/var/www/<name-of-web-app>
 
 # MIT © Sindre Sorhus - sindresorhus.com. GIST: https://gist.github.com/sindresorhus/7996717
 changed_files="$(git diff-tree -r --name-only --no-commit-id HEAD^ HEAD)"
@@ -146,10 +146,10 @@ Next, we echo some feedback to the client so that they know things are working a
 echo "Master ref received. Deploying master branch to production…"
 ```
 
- Then, we checkout the new changes into our `WORKING_TREE` in our web root from our base repository:
+ Then, we checkout the new changes into our `WORKING_TREE` in our web root from our bare repository:
 
 ```bash
-# This command checks out the changes from our repository (GIT_DIR) in our web root (WORKING_TREE)
+# This command checks out the changes from our repository (GIT_DIR) into our web root (WORKING_TREE)
 $ git --work-tree=WORKING_TREE --git-dir=GIT_DIR checkout -f
 ```
 
@@ -193,7 +193,7 @@ The left-hand side of double ampersands will `grep` the list of changed files fo
 ```bash
 grep -x -q "$1"
 ```
-- `x`: makes sure that the first argument is an exact match so that we don't match on a substring of the file we are searching for (e.g. grepping for `test.txt` could match on `another-test.txt` and `test.txt`)
+- `-x`: makes sure that the first argument is an exact match so that we don't match on a substring of the file we are searching for (e.g. grepping for `test.txt` could match on `another-test.txt` and `test.txt`)
 - `-q`: suppresses output from any matches
 
 `grep` will return a zero exit code if a match is found, otherwise it will return a non-zero exit code. Since a zero exit code is mapped to true, the double ampersand in between the two statements acts as a guard from evaluating the second portion of the script if the string is not found.
@@ -220,9 +220,9 @@ The next line:
 echo $(eval npm run build;)
 ```
 
-Will run the `build` script specified in `package.json`. This is targeted to what I have in my react application, but can be swapped for any other command that builds your application.
+Will run the `build` script specified in `package.json` (see: [package.json](https://github.com/shawncruz/shawncruz.com/blob/master/package.json)). This is targeted to what I have in my react application, but can be swapped for any other command that builds a React application.
 
-Each commands output is echoed to the client so that progress, success, or failure can be tracked.
+Each command's output is echoed to the client so that progress, success, or failure can be tracked.
 
 The last part of the script is the `else` block which catches and relays any updated refs that we are not interested in and logs that to the client:
 
@@ -231,12 +231,20 @@ else
         echo "Ref $ref successfully received. Doing nothing: only the master branch may be deployed on this server."
 ```
 
-That's all for the `post-receive` hook script. 
+That's all for the `post-receive` hook script.
+
+## Deployment Pipeline Testing
+
+In order to verify that this deployment pipeline works, from your local machine, try pushing a change to the bare repository we just created. The messages echoed back to will indicate the step by step procedure that occurs while running the `post-recieve` hook; ultimately indicating success or failure. If all goes well, the whole run should looks something like:
+
+```bash
+
+```
+
+Upon success try refreshing your live web page to see the changes applied in realtime!
 
 ## Conclusion
 
-Quickly recapping the deployment pipeline we've just implemented, we created a bare repository to which our changes can be push, and a `post-receive` hook that will checkout the incoming changes to the web root directory, the rebuild the web application.
+Quickly recapping the deployment pipeline we've just implemented, we created a bare repository to which our changes can be push, and a `post-receive` hook that will checkout the incoming changes to the web root directory, then rebuild the web application.
 
-In order to verify that this deployment pipeline works, try pushing a local change to your bare repository. The messages echoed back to you should indicate success or failure. Upon success try refreshing your live web page to see the change in realtime! 
-
-In practice, I've found this to be extremely useful for a single developer. There's something very satisfying--and perhaps potentially dangerous--about being able to deploy changes so quickly to the web. While this method of development works for me, I'm curious to see if it resonates with anyone else.
+In practice, I've found this to be extremely useful for a single developer. There's something very satisfying--and perhaps potentially dangerous--about being able to deploy changes so quickly to the web. While this method of development works for me, I'm curious to see if it resonates with anyone else. I'm particularly interested in knowing at what point this method of deployment fails to scale.
