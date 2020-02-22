@@ -51,8 +51,8 @@ html, body {
 }
 
 :global a:hover {
-  color: rgb(0, 0, 5);
-  background-color: rgb(251, 255, 0);
+  color: rgb(10, 9, 82);
+  text-decoration: none;
 }
 
 :global h1>a, :global h2>a, :global h3>a {

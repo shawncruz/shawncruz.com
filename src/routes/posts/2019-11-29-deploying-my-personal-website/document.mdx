@@ -235,14 +235,27 @@ That's all for the `post-receive` hook script.
 
 ## Deployment Pipeline Testing
 
-In order to verify that this deployment pipeline works, from your local machine, try pushing a change to the bare repository we just created. The messages echoed back to will indicate the step by step procedure that occurs while running the `post-recieve` hook; ultimately indicating success or failure. If all goes well, the whole run should looks something like:
+In order to verify that this deployment pipeline works, from your local machine, try pushing a change to the remote we created before. The messages echoed back will indicate the step by step procedure that occurs while running the `post-recieve` hook; ultimately indicating success or failure. If all goes well, the whole run should looks something like:
 
 ```bash
-$ TODO
-
+# Make and commit a visual change
+$ git commit -am "Testing deployment pipeline"
+# Push to remote
+$ git push production
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (2/2), 200 bytes | 200.00 KiB/s, done.
+Total 3 (delta 2)
+remote: Master ref received. Deploying master branch to production…
+remote: # Depending on whether or not your package.json file was updated, the next section will either be blank or filled with npm install messages
+remote: # Messages from `build` script
+To <server-url>:<name-of-bare-repo> # This is the remote we created before
+   <prev-SHA-1>..<curr-SHA-1>  master -> master
 ```
 
-Upon success try refreshing your live web page to see the changes applied in realtime!
+Upon success, refresh your live web page to see the changes applied instantly!
 
 ## Conclusion
 
