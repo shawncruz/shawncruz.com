@@ -1,0 +1,244 @@
+In this post I discuss in depth how I quickly deploy changes to my personal website. My personal website is a React web app being served from a NGINX web server on a DigitalOcean Droplet running Ubuntu 18.04.
+
+# Initial Setup
+
+I'm going to gloss over the steps I followed in order to set these services up so that I can focus on how I quickly deploy changes to my personal website. Below are some of the tutorials I followed for to setup the services I use for hosting my personal website:
+
+- [Registering a Domain Name With SiteGround](https://www.siteground.com/domain_names.php)
+- [How to Create a Droplet](https://www.digitalocean.com/docs/droplets/how-to/create/)
+- [How to SSH Into a Droplet](https://www.digitalocean.com/docs/droplets/how-to/connect-with-ssh/)
+- [Ubuntu Server Setup Steps](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04)
+- [Installing NGINX on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04)
+
+I used the [create-react-blog](https://github.com/jamesknelson/create-react-blog) template as a basis from which I built my personal website. A large portion of my quick deployments heavily depends on how this template is configured. For those following along, my instructions will be a lot simpler if you're using a React application with a configuration similar to [the one I'm using](https://github.com/shawncruz/shawncruz.com/blob/master/package.json).
+
+# Deployment Pipeline
+
+The remainder of this post focuses on how I set up a deployment pipeline for my personal website. These instructions can also easily be applied when setting up a deployment pipeline for any small-scale React web application. From a high level, my deployment pipeline uses a bare repository with a `post-receive` hook to deploy changes to my personal website.
+
+## Bare Repository
+
+When first setting up this pipeline, I created a bare repository on my Droplet.
+
+### What is a Bare Repository?
+
+A bare repository acts as a centralized repository, separate from `master`, where developers can collaboratively push changes. This is distinct from a typical remote branch, because by default a bare repository doesn't have a working tree, and therefore cannot function as a place where changes can be checked in and committed. It is also important to not pull changes from within a bare repository, because a bare repository conventionally indicates that it should only receive changes.
+
+It's worth noting that a non-bare repository can also receive commits, similar to a bare repository, but it generally also has a workspace. Repositories with workspaces that also receive remote commits can also block incoming changes or cause unwanted merge conflicts if the workspace is dirty or has diverged from the last time changes were pushed.
+
+In general though, I see no reason to pull changes from a bare repository. This would require manually SSHing into a machine, pulling the correct changes, then rebuilding the application. I'll explain a much simpler method that I use to automate these steps.
+
+### Create a Bare Repository
+
+Creating a bare repository is relatively straight forward.
+
+```bash
+# I created a directory where the bare repository would be located, then navigated to that directory
+$ mkdir <name-of-my-bare-repo> && cd "$_"
+# Initialized a new bare repository
+$ git init --bare
+```
+
+### Add Remote to Bare Repository
+
+On my local machine, I added a new remote pointing to the bare repository I had just created. I named mine `production` to distinguish it from the standard remote `origin`.
+
+```bash
+# This remote can be called anything other than "origin"
+$ git remote add production <server-url>:<name-of-my-bare-repo>
+# Checked to make sure that the new remote was present
+$ git remote -v
+# This indicates that I can fetch changes from and push changes to that repository.
+production <server-url>:<name-of-my-bare-repo> (fetch)
+production <server-url>:<name-of-my-bare-repo> (push)
+```
+
+My bare repository only acts as a means of tracking the git commit history. My changes are actually checked out in a separate folder, from where they're served. The benefit of doing this is cleanliness, security, and a matter of separating any git-related data from the actual project files our application is built from.
+
+### Add Web Root
+
+From my virtual machine, I added a directory from which to checkout changes. My bare respository forwards changes here. My web server points to this directory when serving my personal website. I added this directory in `/var/www`.
+
+```bash
+# I had already setup a server block to point at this directory
+$ mkdir /var/www/<name-of-my-personal-website-app>
+```
+
+# post-receive Hook
+
+I needed a way for my bare repository to receive changes, then rebuild and deploy those changes to my web root directory. To accomplish this, I used a `post-receive` hook. A `post-receive` hook is a git hook that triggers downstream processes _after_ incoming changes have been received by a repository. This makes the `post-receive` hook the perfect candidate for rebuilding and redeploying my personal website.
+
+### Creating a post-receive Hook
+
+Since the `post-receive` hook is not part of the standard git hooks, I had to create one within my bare repository.
+
+```bash
+$ cd hooks && touch post-receive
+# Makes it executable
+$ chmod +x  post-receive
+```
+
+Inside the `post-receive` hook, I added:
+
+```bash
+#!/bin/bash
+
+GIT_DIR=/path/to/<name-of-my-bare-repo>
+WORKING_TREE=/var/www/<name-of-my-personal-website-app>
+
+# MIT © Sindre Sorhus - sindresorhus.com. GIST: https://gist.github.com/sindresorhus/7996717
+changed_files="$(git diff-tree -r --name-only --no-commit-id HEAD^ HEAD)"
+check_run() {
+	echo "$changed_files" | grep -x -q "$1" && eval "$2"
+}
+
+# Inspired by http://mattfairbrass.com/2015/08/25/push-to-deploy-to-production-with-git/
+while read oldrev newrev ref
+do
+    if [[ $ref =~ refs/heads/master ]];
+    then
+        echo "Master ref received. Deploying master branch to production…"
+        git --work-tree=WORKING_TREE --git-dir=GIT_DIR checkout -f
+        cd WORKING_TREE;
+        echo $(eval check_run package.json "npm install";)
+        echo $(eval npm run build;)
+    else
+        echo "Ref $ref successfully received. Doing nothing: only the master branch may be deployed on this server."
+    fi
+done
+```
+
+This script will run after changes have successfully been received by the repository. While the `post-receive` hook doesn't take any arguments, it receives info from standard input and can be read as such:
+
+```bash
+while read oldrev newrev ref
+do
+# ...
+done
+```
+
+Breaking down each item read from standard input:
+
+- `oldrev`: References the previous commit's SHA-1
+- `newrev`: References the incoming commit's SHA-1
+- `ref` : Name of the ref that's being updated.
+
+Since the `post-receive` hook runs after all refs have been updated, it's important to read them in a while loop so that all of them are processed. For the purposes of my use case, I focused solely on a single ref so that I can build from a single commit history. To accomplish this, I wrapped the logic in an if-statement to ignore unwanted refs:
+
+```bash
+# Checks if the ref that was read from standard input is the master branch, which is where our upstream changes will be pushed.
+if [[ $ref =~ refs/heads/master ]];
+```
+
+Next, it echoes some feedback to the client so that I know things are working as expected:
+
+```bash
+echo "Master ref received. Deploying master branch to production…"
+```
+
+Then, it checks out the new changes from my bare repository into my `WORKING_TREE` located in my web root:
+
+```bash
+# This command checks out the changes from my bare repository (GIT_DIR) into my web root (WORKING_TREE)
+$ git --work-tree=WORKING_TREE --git-dir=GIT_DIR checkout -f
+```
+
+Next, it rebuilds the app by navigating to it's location in the filesystem:
+
+```bash
+cd WORKING_TREE;
+echo $(eval check_run package.json "npm install";)
+echo $(eval npm run build;)
+```
+
+It runs the `check_run` function first to check if `package.json` has been updated. This check prevents re-installing versions of dependencies that have already been installed. In reality this naively checks if the last commit contained changes to `package.json`--not actually checking if any dependencies were modified.
+
+Examining the `check_run` function a bit closer:
+
+```bash
+changed_files="$(git diff-tree -r --name-only --no-commit-id HEAD^ HEAD)"
+```
+
+Each argument is important:
+
+- `-r`: Examines subtrees in the top-level repo for changes
+- `--name-only`: Shows name of files that were changed between the two commits
+- `--no-commit-id`: Suppresses commit ID output
+- `HEAD`: Refers to the commit that's currently checked out (see: `cat .git/HEAD`). In the context of this script, this value will always be `refs/heads/master`.
+- `HEAD^`: Refers to the commit immediately before `HEAD`
+
+Putting it all together, `changed_files` will output the names of the files that were added, edited, or deleted in the last commit.
+
+In the larger scheme, `changed_files` is used in `check_run`:
+
+```bash
+check_run() {
+	echo "$changed_files" | grep -x -q "$1" && eval "$2"
+}
+```
+
+`check_run` pipes the output from `changed_files` into the next portion of the script:
+
+```bash
+grep -x -q "$1" && eval "$2"
+```
+
+The left-hand side of double ampersands will `grep` the list of changed files for the first argument passed to the function (e.g. `package.json`).
+
+```bash
+grep -x -q "$1"
+```
+
+- `-x`: makes sure that the first argument is an exact match so that it doesn't match on a substring of the file it is searching for (e.g. grepping for `test.txt` will match on `another-test.txt` and `test.txt`)
+- `-q`: suppresses output from any matches
+
+`grep` will return a zero exit code if a match is found, otherwise it will return a non-zero exit code. Since a zero exit code is mapped to true, the double ampersand in between the two statements acts as a guard from evaluating the second portion of the script if the string is not found. If a match is found we evaluate the right-hand side of the double ampersand:
+
+```bash
+eval "$2"
+```
+
+This executes the second argument that gets sent to this function, which is presumably some type of function call (e.g. `npm install`). Examining how this function is utilized in the `post-receive` hook:
+
+```bash
+# Check if any changes have been made to `package.json`, and if so run `npm install`
+echo $(eval check_run package.json "npm install";)
+# Runs the `build` script specified in my `package.json`
+echo $(eval npm run build;)
+```
+
+Each command's output is echoed to the client so that progress, success, or failure can be tracked. The last part of the script is the `else` block which catches and relays any updated refs that we are not interested in and echoes that to the client.
+
+```bash
+else
+        echo "Ref $ref successfully received. Doing nothing: only the master branch may be deployed on this server."
+```
+
+That sums up the `post-receive` hook script.
+
+## Deployment Pipeline Testing
+
+In order to verify that this deployment pipeline worked, from my local machine, I tried pushing a change to the remote I had created. The messages echoed back indicated the step by step procedure that occurs while running the `post-recieve` hook; ultimately indicating success or failure. On a successful run, the output looks like:
+```bash
+$ git commit -am "Testing deployment pipeline w/ a small UI change"
+$ git push production
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (2/2), 200 bytes | 200.00 KiB/s, done.
+Total 3 (delta 2)
+remote: Master ref received. Deploying master branch to production…
+remote: # Depending on whether or not my package.json file was updated, the next section will either be blank or filled with npm install messages
+remote: # Messages from `build` script
+To <server-url>:<name-of-my-bare-repo>
+   <prev-SHA-1>..<curr-SHA-1>  master -> master
+```
+
+Upon success, I reloaded the page to see that my changes had appeared on my personal website.
+
+## Conclusion
+
+Quickly recapping the deployment pipeline I've implemented: I created a bare repository to which my changes can be pushed, and a `post-receive` hook that will checkout the incoming changes to the web root directory then rebuilds my personal website.
+
+In practice, I've found this to be extremely useful for a single developer. There's something very satisfying, and perhaps potentially dangerous, about being able to deploy changes so quickly to my personal website. While this method of development works for me, I'm curious to see if it resonates with anyone else. I'm particularly interested in knowing at what point this method of deployment fails to scale.
