@@ -11,6 +11,7 @@ html, body {
 :root {
   --primary-color: black;
   --primary-color-light: #001AC9;
+  --dim-block-margin-horizontal: 2rem;
 }
 
 :global * {
@@ -32,6 +33,7 @@ html, body {
   margin: 0;
   padding: 0;
   word-wrap: break-word;
+  padding: 0 2rem;
 }
 
 :global(pre), :global(code) {

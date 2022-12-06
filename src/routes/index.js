@@ -102,7 +102,8 @@ const routes = compose(
     ),
 
     // Miscellaneous pages can be added directly to the root switch.
-    "/about": lazy(() => import("./about"))
+    "/about": lazy(() => import("./about")),
+    "/long-bets": lazy(() => import("./longBets"))
   })
 );
 

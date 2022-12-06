@@ -1,0 +1,47 @@
+@font-face {
+    font-family: Karla;
+    src: url("../../assets/fonts/Karla-Regular.ttf");
+}
+
+.navBar ul {
+    overflow:hidden;
+    white-space: nowrap;
+    border-bottom: 1px solid rgb(61, 61, 61);
+    list-style: none;
+    padding: 0;
+    margin-top: 0;
+}
+
+.navBar ul>li {
+    display:inline;
+    font-family: Karla;
+    border-top: 1px solid rgb(61, 61, 61);
+    padding: 0.3em 0;
+}
+
+.navBar ul>li>a {
+    color: rgb(197, 197, 197);
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.navBar ul>li>a:hover {
+    color: white;
+}
+
+.navBar path {
+    fill: rgb(197, 197, 197);
+}
+
+.navBar path:hover {
+    fill: white;
+}
+
+.navBar img {
+    height: 100px;
+}
+
+.navBar a {
+    margin: 0 10px 0.5em;
+    background-color: transparent;
+  }

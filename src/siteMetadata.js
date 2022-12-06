@@ -8,5 +8,5 @@ export default {
     "A repurposed clone of James K Nelson's create-react-blog base template",
 
   // The number of posts to a page on the site index.
-  indexPageSize: 10
+  indexPageSize: 5
 };

@@ -1,6 +1,6 @@
 In this post I discuss in depth how I quickly deploy changes to my personal website. My personal website is a React web app being served from a NGINX web server on a DigitalOcean Droplet running Ubuntu 18.04.
 
-# Initial Setup
+# [Initial Setup](#initial-setup)
 
 I'm going to gloss over the steps I followed in order to set these services up so that I can focus on how I quickly deploy changes to my personal website. Below are some of the tutorials I followed for to setup the services I use for hosting my personal website:
 
@@ -16,7 +16,7 @@ I used the [create-react-blog](https://github.com/jamesknelson/create-react-blog
 
 The remainder of this post focuses on how I set up a deployment pipeline for my personal website. These instructions can also easily be applied when setting up a deployment pipeline for any small-scale React web application. From a high level, my deployment pipeline uses a bare repository with a `post-receive` hook to deploy changes to my personal website.
 
-## Bare Repository
+## [Bare Repository](#bare-repository)
 
 When first setting up this pipeline, I created a bare repository on my Droplet.
 
