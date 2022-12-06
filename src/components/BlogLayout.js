@@ -7,10 +7,10 @@ import styles from "./styles/BlogLayout.module.css";
 function BlogLayout({ blogRoot }) {
   return (
     <div className="container">
-      <header>
+      <header className={styles.header}>
         <NavBar blogRoot={blogRoot} />
       </header>
-      <main>
+      <main className={styles.main}>
         <NotFoundBoundary render={() => <NotFoundPage />}>
           <View />
         </NotFoundBoundary>
