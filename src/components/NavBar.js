@@ -11,9 +11,6 @@ const NavBar = ({ blogRoot }, onItemClick) => (
     <Link href="/about" onClick={onItemClick}>
       About
     </Link>
-    <Link href="/long-bets" onClick={onItemClick}>
-      Long Bets
-    </Link>
   </div>
 );
 

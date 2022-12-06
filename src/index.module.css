@@ -41,7 +41,7 @@ html, body {
   margin: 0;
   padding: 0;
   word-wrap: break-word;
-  padding: 0 2rem;
+  display: block;
 }
 
 :global(pre), :global(code) {

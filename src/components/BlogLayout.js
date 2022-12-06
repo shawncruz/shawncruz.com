@@ -6,7 +6,7 @@ import styles from "./styles/BlogLayout.module.css";
 
 function BlogLayout({ blogRoot }) {
   return (
-    <div className="container">
+    <div className={styles.container}>
       <header className={styles.header}>
         <NavBar blogRoot={blogRoot} />
       </header>

@@ -3,6 +3,11 @@
     src: url("../../assets/fonts/Karla-Regular.ttf");
 }
 
+.navBar {
+    margin: 1.0rem 0 1.0rem;
+    font-family: Karla;
+}
+
 .navBar ul {
     overflow:hidden;
     white-space: nowrap;
@@ -19,18 +24,12 @@
     padding: 0.3em 0;
 }
 
-.navBar ul>li>a {
-    color: rgb(197, 197, 197);
+.navBar a {
     text-decoration: none;
     background-color: transparent;
-}
-
-.navBar ul>li>a:hover {
-    color: white;
-}
-
-.navBar path {
-    fill: rgb(197, 197, 197);
+    color: black;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .navBar path:hover {
@@ -38,10 +37,10 @@
 }
 
 .navBar img {
-    height: 100px;
+    height: 75px;
 }
 
 .navBar a {
     margin: 0 10px 0.5em;
     background-color: transparent;
-  }
+}
