@@ -57,7 +57,7 @@ ul {
   /* This will put the pseudo element on its own line. */
   display: block;
   width: 60px;
-  /* padding-top: 20px; */
+  padding-top: 20px;
   border-bottom: 0.5px solid #B933AD;
 }
 
@@ -87,9 +87,9 @@ img {
 
 .footer {
   border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */
   padding-top: 2.5em;
-  padding-bottom: 2.5em;
+  padding-bottom: 1.0em;
 }
 
 .footer .title {

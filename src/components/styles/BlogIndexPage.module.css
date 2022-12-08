@@ -61,7 +61,7 @@
 }
 
 .footer {
-  padding-top: 2.5em;
+  /* padding-top: 2.5em; */
 }
 
 @media only screen and (max-width: 800px) {
@@ -91,7 +91,7 @@
     display: block;
     /* This will put the pseudo element on its own line. */
     width: 100%;
-    /* padding-top: 20px; */
+    padding-top: 20px;
     border-bottom: 0.5px solid #B933AD
   }
 }
