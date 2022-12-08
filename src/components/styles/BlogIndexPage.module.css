@@ -28,7 +28,7 @@
 }
 
 .footer {
-  margin-top: 7rem;
+  /* margin-top: 7rem; */
 }
 
 .container {
@@ -61,7 +61,6 @@
 }
 
 .footer {
-  border-top: 1px solid #eee;
   padding-top: 2.5em;
 }
 
@@ -92,7 +91,7 @@
     display: block;
     /* This will put the pseudo element on its own line. */
     width: 100%;
-    padding-top: 20px;
+    /* padding-top: 20px; */
     border-bottom: 0.5px solid #B933AD
   }
 }
