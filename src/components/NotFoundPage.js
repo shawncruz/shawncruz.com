@@ -8,7 +8,7 @@ import styles from "./styles/NotFoundPage.module.css";
 // you'll just need to close the error overlay with the "x" at the top right.
 function NotFoundPage() {
   return (
-    <div className={styles.NotFound}>
+    <div className={styles.notFound}>
       <h1>404 - Not Found</h1>
     </div>
   );

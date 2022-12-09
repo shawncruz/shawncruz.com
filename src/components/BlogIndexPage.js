@@ -7,7 +7,6 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (
     <>
       <div className={styles.container}>
-        {/* <div className={styles.divider}></div> */}
         <div className={styles.flexItem}>
           <ul className={styles.articlesList}>
             {postRoutes.map((route) => (
@@ -25,7 +24,6 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
           )}
         </div>
         <footer className={styles.footer}></footer>
-        {/* <div className={styles.divider}></div> */}
       </div>
     </>
   );

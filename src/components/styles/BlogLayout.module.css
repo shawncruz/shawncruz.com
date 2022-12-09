@@ -1,142 +1,19 @@
-html, body {
-  /* needed because hiding the menu on the right side is not perfect,  */
-  overflow-x: hidden;
-  position: relative;
-}
-
 .container {
   margin: 0 auto;
   max-width: 100%;
   padding: 0rem 3rem;
 }
 
-.header { 
-  display: flex;
-  flex-direction: column;
-  padding-top: 15px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  padding: 0.5em 3vw;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 790px;
-  font-family: Karla;
-  -ms-flex-positive: 1;
-  -webkit-box-flex: 1;
-}
-
-.navBar {
-  font-size: 18px;
-  font-family: Karla;
-  display: flex;
-  justify-content: space-between;
-  clear:both;
-  padding-bottom: 35px;
-    padding-top: 25px;
-  border-bottom: 0.5px solid #B933AD
-}
-
-.navBar img {
-  height: 75px;
-}
-
-.navBar a {
-  text-decoration: none;
-  background-color: transparent;
-  color: black;
-  display: table-cell;
-  vertical-align: middle;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-}
-
-header.top {
-  height: 100%;
-  padding: 1em 3vw;
-  background-color: black;
-}
-
-div.logo > a {
-  background-color: transparent;
-}
-
-.footer { 
-  text-align: center;
-  opacity: .4;
-  padding: 1.5rem 1rem 1.5rem;
-  display: flex;
-    flex-direction: column;
-    padding-top: 15px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    padding: 0.5em 3vw;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 790px;
-    font-family: Karla;
-    -ms-flex-positive: 1;
-    -webkit-box-flex: 1;
-}
-
-.footer .content {
-  padding-top: 35px;
-  padding-bottom: 45px;
-  border-top: 0.5px solid #B933AD;
-}
-
-.socialLinks {
-  /* padding-top: 35px;
-  padding-bottom: 45px;
-  border-top: 0.5px solid #B933AD; */
-}
-
-.socialLinks a {
-  margin: 0 10px 0.5em;
-  background-color: transparent;
-}
-
-.socialLinks svg {
-  height: 25px;
-}
-
 @media only screen and (min-width: 800px) {
-  header.top {
-    width: 20vw;
-    position: fixed;
-    text-align: center;
-  }
   main {
-    /* margin-left: 20vw; */
-    /* padding-top: 2.5em; */
-    /* padding-bottom: 2.5em; */
     padding-bottom: 2.5em;
     padding-top: 1.5em;
-  }
-  .menuItems ul {
-    margin-top: 20px;
-  }
-  .logo {
-    margin: 0px 0 1.66667em;
-  }
-  .title {
-    padding-bottom: 3.33333em;
-    padding-top: 3.33333em;
   }
 }
 
 @media only screen and (max-width: 800px) {
-  .menuItems {
-    display: none !important;
-  }
   main {
-    padding-bottom: 1em;
-    /* padding-top: 1.5em; */
-    /* padding-bottom: 1.5em; */
+    padding-bottom: 2.5em;
+    padding-top: 1.5em;
   }
 }
