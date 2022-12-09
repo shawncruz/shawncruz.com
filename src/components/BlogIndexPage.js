@@ -7,13 +7,11 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.bannerImage}></div>
-        <div className={styles.divider}></div>
         <div className={styles.flexItem}>
           <ul className={styles.articlesList}>
-            {postRoutes.map(route => (
+            {postRoutes.map((route) => (
               <li key={route.url.href}>
-                <ArticleSummary blogRoot={blogRoot} route={route} />
+                <ArticleSummary route={route} />
               </li>
             ))}
           </ul>
@@ -25,9 +23,8 @@ function BlogIndexPage({ blogRoot, pageCount, pageNumber, postRoutes }) {
             />
           )}
         </div>
+        <footer className={styles.footer}></footer>
       </div>
-
-      <footer className={styles.footer}></footer>
     </>
   );
 }

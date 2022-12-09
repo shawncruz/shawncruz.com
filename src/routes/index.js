@@ -20,7 +20,8 @@ import posts from "./posts";
 
 // Split the posts into a list of chunks of the given size, and
 // then build index pages for each chunk.
-let chunks = chunk(posts, siteMetadata.indexPageSize);
+let indexPageSize = siteMetadata.indexPageSize
+let chunks = chunk(posts, indexPageSize);
 let chunkPagePairs = chunks.map((chunk, i) => [
   "/" + (i + 1),
   map(async (req, context) => {

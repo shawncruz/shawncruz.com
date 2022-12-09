@@ -7,3 +7,6 @@ node_modules/
 
 # OS generated files
 .DS_Store
+
+# Test articles
+src/routes/posts/*copy*

@@ -87,9 +87,9 @@ img {
 
 .footer {
   border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */
   padding-top: 2.5em;
-  padding-bottom: 2.5em;
+  padding-bottom: 1.0em;
 }
 
 .footer .title {

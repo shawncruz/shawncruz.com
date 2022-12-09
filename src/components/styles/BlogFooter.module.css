@@ -1,0 +1,34 @@
+.footer {
+  text-align: center;
+  opacity: 0.4;
+  padding: 1.5rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0.5em 3vw;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 790px;
+  font-family: Karla;
+  -ms-flex-positive: 1;
+  -webkit-box-flex: 1;
+}
+
+.footer .content {
+  padding-top: 35px;
+  padding-bottom: 45px;
+  border-top: 0.5px solid #b933ad;
+}
+
+.socialLinks a {
+  margin: 0 10px 0.5em;
+  background-color: transparent;
+}
+
+.socialLinks svg {
+  height: 25px;
+}
