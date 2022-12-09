@@ -3,7 +3,7 @@ import { Link } from "react-navi";
 import styles from "./styles/ArticleSummary.module.css";
 import ArticleTimestamp from "./ArticleTimestamp";
 
-function ArticleSummary({ blogRoot, route }) {
+function ArticleSummary({ route }) {
   return (
     <article className={styles.ArticleSummary}>
       <ArticleTimestamp meta={route.data} />
