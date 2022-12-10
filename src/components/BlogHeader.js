@@ -8,7 +8,7 @@ function BlogHeader({ blogRoot }) {
     <header className={styles.header}>
       <div className={styles.navBar}>
         <Link href={blogRoot} className="logo">
-          <img src={SDotSvg} alt="S." width="150px" />
+          <img src={SDotSvg} alt="S." />
         </Link>
         <Link href="/about" className="about">
           About
