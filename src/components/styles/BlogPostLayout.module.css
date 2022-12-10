@@ -264,7 +264,7 @@ img {
 }
 
 .content :global(.token.tag), .content :global(.token.keyword) {
-  color: #e95965;
+  color: #f79ba2;
 }
 
 .content :global(.token.boolean) {
