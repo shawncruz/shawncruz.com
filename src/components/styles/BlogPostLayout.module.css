@@ -138,7 +138,7 @@ img {
 */
 
 .content code, .content pre {
-  color: white;
+  color: #f7fcff;
   font-family: Consolas, Menlo, Monaco, source-code-pro, Courier New, monospace;
   font-feature-settings: normal;
   text-align: left;
@@ -159,6 +159,7 @@ img {
 }
 
 .content :not(pre)>code, .content pre {
+  /* code background */
   background: black;
 }
 
@@ -169,11 +170,11 @@ img {
 /* Text Selection colour */
 
 .content pre::-moz-selection, .content pre ::-moz-selection {
-  background: rgb(31, 83, 255);
+  background: #423022;
 }
 
 .content pre::selection, .content pre ::selection {
-  background: rgb(31, 83, 255);
+  background: #423022;
 }
 
 /* Inline code */
@@ -191,7 +192,7 @@ img {
 }
 
 .content :global(.highlighted-line) {
-  background-color: hsla(207, 95%, 15%, 1);
+  background-color: #236c75;
   display: block;
   margin-right: -1em;
   margin-left: -1em;
@@ -206,7 +207,7 @@ img {
 }
 
 .content :global(.token.comment) {
-  color: grey;
+  color: #c1b9b9;
   font-style: italic;
 }
 
@@ -216,7 +217,7 @@ img {
 }
 
 .content :global(.token.string), .content :global(.token.url) {
-  color: rgb(255, 225, 0);
+  color: #a0c3ff;
 }
 
 .content :global(.token.variable) {
@@ -224,25 +225,24 @@ img {
 }
 
 .content :global(.token.number) {
-  color: rgb(247, 140, 108);
+  color: #91b9ff;
 }
 
 .content :global(.token.function) {
-  color: #00ff44;
-  background-color: #00009c;
+  color: #f3e056;
 }
 
 .content :global(.token.environment.constant) {
-  color: rgb(173, 211, 108);
+  color: rgb(3, 246, 35);
   font-weight: 900;
 }
 
 .content :global(.token.builtin), .content :global(.token.char), .content :global(.token.constant) {
-  color: rgb(130, 170, 255);
+  color: #eeb926;
 }
 
 .content :global(.token.punctuation) {
-  color: white;
+  color: #f5f5f5;
 }
 
 .content :global(.token.selector), .content :global(.token.doctype) {
@@ -251,21 +251,20 @@ img {
 }
 
 .content :global(.token.builtin.class-name) {
-  color: rgb(224, 161, 255);
+  color: #f3e056;
   font-style: 'italic';
 }
 
 .content :global(.token.class-name) {
-  color: rgb(207, 255, 0);
+  color: #46b9c8
 }
 
 .content :global(.token.operator) {
-  color: #B933AD;
+  color: #b933ad;
 }
 
 .content :global(.token.tag), .content :global(.token.keyword) {
-  color: #2ae416;
-  background-color: #014201;
+  color: #e95965;
 }
 
 .content :global(.token.boolean) {
@@ -277,5 +276,5 @@ img {
 }
 
 .content :global(.token.namespace) {
-  color: rgb(178, 204, 214);
+  color: #ede9da;
 }
