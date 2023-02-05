@@ -1,90 +1,96 @@
-In this post I discuss in depth how I quickly deploy changes to my personal website. My personal website is a React web app being served from a NGINX web server on a DigitalOcean Droplet running Ubuntu 18.04.
+When I initially set out to build this website, I had planned to spend most of my time building the actual application. In the end, I spent a majority of my time figuring out how to create a sustainable deployment pipeline. After some digging, I developed a deployment strategy that worked well for my use case, while allowing me to get into the weeds a bit.
 
-# Initial Setup
+From a high level, the deployment strategy I chose pushes to a remote bare repository that runs a deployment script when it receives incoming changes. Outlined here are the components and techniques I used to stitch it all together.
 
-I'm going to gloss over the steps I followed in order to set these services up so that I can focus on how I quickly deploy changes to my personal website. Below are some of the tutorials I followed for to setup the services I use for hosting my personal website:
+# Table of Contents
+1. [Droplet](#droplet)
+2. [Bare Repository](#bare-repository)
+3. [Post Receive Hook](#post-receive-hook)
+4. [Local Machine](#local-machine)
+5. [Deploying](#deploying)
+6. [Improvements](#improvements)
 
-- [Registering a Domain Name With SiteGround](https://www.siteground.com/domain_names.php)
+## Droplet
+
+Choosing a VPS provider was straight-forward. I wanted to keep my budget to a minimum. The web app itself would be no larger than 500MB, so it was really just a matter of choosing a reasonable option. I decided to go with DigitalOcean because I really liked their branding, experience, and documentation. Even though there were slightly cheaper options, brand trust and good docs matter more to me.
+
+I deployed my web app on a Droplet. Every part of the setup was well documented on DigitalOcean's website:
 - [How to Create a Droplet](https://www.digitalocean.com/docs/droplets/how-to/create/)
 - [How to SSH Into a Droplet](https://www.digitalocean.com/docs/droplets/how-to/connect-with-ssh/)
 - [Ubuntu Server Setup Steps](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04)
 - [Installing NGINX on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04)
 
-I used the [create-react-blog](https://github.com/jamesknelson/create-react-blog) template as a basis from which I built my personal website. A large portion of my quick deployments heavily depends on how this template is configured. For those following along, my instructions will be a lot simpler if you're using a React application with a configuration similar to [the one I'm using](https://github.com/shawncruz/shawncruz.com/blob/master/package.json).
+The key server setup steps were to configure a web root and NGINX:
 
-# Deployment Pipeline
+### Web Root
 
-The remainder of this post focuses on how I set up a deployment pipeline for my personal website. These instructions can also easily be applied when setting up a deployment pipeline for any small-scale React web application. From a high level, my deployment pipeline uses a bare repository with a `post-receive` hook to deploy changes to my personal website.
+My web server points to this directory when serving my personal website. At the end of the deployment pipeline, this will be where my product build resides.
+
+```bash
+$ mkdir /var/www/shawncruz.com
+```
+
+### NGINX Configuration
+
+This step was copy-paste from [this](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04) article. For brevity, this is a sample of my configuration file:
+
+```nginx
+server {
+   root /var/www/shawncruz.com/build;
+   server_name shawncruz.com www.shawncruz.com;
+   index index.html index.htm;
+   location / {
+   }
+}
+```
+
+The root points to the build folder that npm creates.
 
 ## Bare Repository
 
-When first setting up this pipeline, I created a bare repository on my Droplet.
+I created a bare repository on my Droplet as a means of receiving and reacting to changes.
 
-### What is a Bare Repository?
+A bare repository acts as a centralized repository, separate from the main branch, where developers can collaboratively push changes. This is distinct from a typical remote branch, because by default a bare repository doesn’t have a working tree, and therefore cannot function as a place where changes can be checked in and committed. It is also important to not pull changes from within a bare repository, because a bare repository conventionally indicates that it should only receive changes.
 
-A bare repository acts as a centralized repository, separate from `master`, where developers can collaboratively push changes. This is distinct from a typical remote branch, because by default a bare repository doesn't have a working tree, and therefore cannot function as a place where changes can be checked in and committed. It is also important to not pull changes from within a bare repository, because a bare repository conventionally indicates that it should only receive changes.
+It’s worth noting that a non-bare repository can also receive commits, similar to a bare repository, but it generally also has a workspace. Repositories with workspaces that also receive remote commits can block incoming changes or cause unwanted merge conflicts if the workspace is dirty or has diverged from the last time changes were pushed.
 
-It's worth noting that a non-bare repository can also receive commits, similar to a bare repository, but it generally also has a workspace. Repositories with workspaces that also receive remote commits can also block incoming changes or cause unwanted merge conflicts if the workspace is dirty or has diverged from the last time changes were pushed.
-
-In general though, I see no reason to pull changes from a bare repository. This would require manually SSHing into a machine, pulling the correct changes, then rebuilding the application. I'll explain a much simpler method that I use to automate these steps.
+In general though, I see no reason to pull changes from a bare repository. This would require logging into a machine, pulling the correct changes, then rebuilding the application. I’ll explain a much simpler method that I use to automate these steps.
 
 ### Create a Bare Repository
 
-Creating a bare repository is relatively straight forward.
+I created my bare repository as such:
 
 ```bash
 # I created a directory where the bare repository would be located, then navigated to that directory
-$ mkdir <name-of-my-bare-repo> && cd "$_"
+$ mkdir shawncruz.com-bare && cd "$_"
 # Initialized a new bare repository
 $ git init --bare
 ```
 
-### Add Remote to Bare Repository
+The bare repository only acts as a means of tracking the git commit history. My changes are actually checked out in a separate folder, from where they're served. The benefit of doing this is cleanliness, security, and a matter of separating any git-related data from the actual project files my application is built from.
 
-On my local machine, I added a new remote pointing to the bare repository I had just created. I named mine `production` to distinguish it from the standard remote `origin`.
+## Post Receive Hook
 
-```bash
-# This remote can be called anything other than "origin"
-$ git remote add production <server-url>:<name-of-my-bare-repo>
-# Checked to make sure that the new remote was present
-$ git remote -v
-# This indicates that I can fetch changes from and push changes to that repository.
-production <server-url>:<name-of-my-bare-repo> (fetch)
-production <server-url>:<name-of-my-bare-repo> (push)
-```
-
-My bare repository only acts as a means of tracking the git commit history. My changes are actually checked out in a separate folder, from where they're served. The benefit of doing this is cleanliness, security, and a matter of separating any git-related data from the actual project files our application is built from.
-
-### Add Web Root
-
-From my virtual machine, I added a directory from which to checkout changes. My bare respository forwards changes here. My web server points to this directory when serving my personal website. I added this directory in `/var/www`.
-
-```bash
-# I had already setup a server block to point at this directory
-$ mkdir /var/www/<name-of-my-personal-website-app>
-```
-
-# post-receive Hook
-
-I needed a way for my bare repository to receive changes, then rebuild and deploy those changes to my web root directory. To accomplish this, I used a `post-receive` hook. A `post-receive` hook is a git hook that triggers downstream processes _after_ incoming changes have been received by a repository. This makes the `post-receive` hook the perfect candidate for rebuilding and redeploying my personal website.
+In order for my bare repository to receive, rebuild, and deploy those changes to my web root I used a `post-receive` hook. A `post-receive` hook is a git hook that triggers downstream processes _after_ incoming changes have been received by a repository.
 
 ### Creating a post-receive Hook
 
 Since the `post-receive` hook is not part of the standard git hooks, I had to create one within my bare repository.
 
 ```bash
+# From within the bare repo
 $ cd hooks && touch post-receive
 # Makes it executable
-$ chmod +x  post-receive
+$ chmod +x post-receive
 ```
 
-Inside the `post-receive` hook, I added:
+Inside the `post-receive` hook file, I added the following:
 
 ```bash
 #!/bin/bash
 
-GIT_DIR=/path/to/<name-of-my-bare-repo>
-WORKING_TREE=/var/www/<name-of-my-personal-website-app>
+GIT_DIR=~/shawncruz.com-bare
+WORKING_TREE=/var/www/shawncruz.com
 
 # MIT © Sindre Sorhus - sindresorhus.com. GIST: https://gist.github.com/sindresorhus/7996717
 changed_files="$(git diff-tree -r --name-only --no-commit-id HEAD^ HEAD)"
@@ -216,9 +222,27 @@ else
 
 That sums up the `post-receive` hook script.
 
-## Deployment Pipeline Testing
+## Local Machine
 
-In order to verify that this deployment pipeline worked, from my local machine, I tried pushing a change to the remote I had created. The messages echoed back indicated the step by step procedure that occurs while running the `post-recieve` hook; ultimately indicating success or failure. On a successful run, the output looks like:
+I needed to be able to push changes from my local machine to the server. This required minimal setup.
+
+### Add Remote to Bare Repository
+
+On my local machine, I added a new remote pointing to the bare repository I created. I named mine `production` to distinguish it from the standard remote `origin`.
+
+```bash
+# This remote can be called anything other than "origin"
+$ git remote add production <server-url>:shawncruz.com-bare
+# Checked to make sure that the new remote was present
+$ git remote -v
+# This indicates that I can fetch changes from and push changes to that repository.
+production <server-url>:shawncruz.com-bare (fetch)
+production <server-url>:shawncruz.com-bare (push)
+```
+
+## Deploying
+
+In order to verify that this deployment pipeline worked from my local machine, I tried pushing a change to the remote I had created. The messages echoed back indicated the step by step procedure that occurred while running the `post-recieve` hook--ultimately indicating success or failure. On a successful run, the output looks like:
 ```bash
 $ git commit -am "Testing deployment pipeline w/ a small UI change"
 $ git push production
@@ -231,14 +255,12 @@ Total 3 (delta 2)
 remote: Master ref received. Deploying master branch to production…
 remote: # Depending on whether or not my package.json file was updated, the next section will either be blank or filled with npm install messages
 remote: # Messages from `build` script
-To <server-url>:<name-of-my-bare-repo>
+To <server-url>:shawncruz.com-bare
    <prev-SHA-1>..<curr-SHA-1>  master -> master
 ```
 
-Upon success, I reloaded the page to see that my changes had appeared on my personal website.
+Upon success, reloading [shawncruz.com](shawncruz.com) included my changes.
 
-## Conclusion
+## Improvements
 
-Quickly recapping the deployment pipeline I've implemented: I created a bare repository to which my changes can be pushed, and a `post-receive` hook that will checkout the incoming changes to the web root directory then rebuilds my personal website.
-
-In practice, I've found this to be extremely useful for a single developer. There's something very satisfying, and perhaps potentially dangerous, about being able to deploy changes so quickly to my personal website. While this method of development works for me, I'm curious to see if it resonates with anyone else. I'm particularly interested in knowing at what point this method of deployment fails to scale.
+Currently, I have to manually push changes to two separate remotes: `origin` and `production`. The problem with this setup is that both remotes can easily diverge. A potential solution is to utilize a git hook that runs `git push production` post-push. This will couple changes being deployed to both remotes.
