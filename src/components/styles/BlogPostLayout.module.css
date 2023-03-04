@@ -24,6 +24,14 @@
   -webkit-flex-direction: column;
 }
 
+.container h1 {
+  font-size: 2em;
+}
+
+.container h2 {
+  font-size: 1.5em;
+}
+
 .container h3 {
   margin: inherit;
 }
