@@ -178,6 +178,7 @@ Even though this solution solves a subset of the problem, it isn't practical to 
 ## Second Solution
 
 Since my initial solution wasn't viable, my second solution separated the logic into two steps:
+
 1. Group all deleted Shipping Address IDs by `duplicate_shipping_addresses.id`'s, given the Shipping Address ID exists in the records `duplicate_shipping_addresses.shipping_address_ids` array. 
 2. Update all `duplicate_shipping_addresses.shipping_address_ids` to be the difference between what's presently in that row to the mappings from 1.
 
@@ -234,6 +235,7 @@ This solution is much more simple; and unlike the first solution, is idempotent.
 # Closing Thoughts
 
 Some takeways from this experience are:
+
 1. Always write a SELECT statement representation of your UPDATE statement to verify that the correct rows are being returned
 2. Identify if a script should be idempotent, and if so ensure that only the first invocation of the script results in changes to the DB
 3. Write tests to verify that the script has actually left the DB in a state that you expected
