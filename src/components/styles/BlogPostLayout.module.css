@@ -250,7 +250,7 @@ img {
 }
 
 .content :global(.token.punctuation) {
-  color: #f5f5f5;
+  color: #7cc7cd;
 }
 
 .content :global(.token.selector), .content :global(.token.doctype) {
