@@ -99,7 +99,7 @@ where dap.shipping_address_ids ? dsa.id;
 (3 rows)
 ```
 
-You might expect each output row to remove an ID from `shipping_address_ids`. In practice, what happens is that only a single output row is applied on update. It is non-deterministic which output row is chosen by the planner.
+You might expect each output row to remove an ID from `shipping_address_ids`. **In practice, what happens is that only a single output row is applied on update.** It is non-deterministic which output row is chosen by the planner.
 
 Watch what happens if I run the script multiple times in succession:
 ```sql
