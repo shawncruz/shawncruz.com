@@ -1,96 +1,31 @@
 # Problem
 
-Over the past few years, I’ve been using Resident Advisor’s [event page](https://ra.co/events) to find live music in NYC. While I’ve had fairly decent success finding shows that I like, it can be daunting finding them to begin with. On any given Friday there can be 40+ shows in NYC, where each show could have 8+ artists. If I wanted to figure out which show I’d most likely enjoy on that night, I’d have to look up 320 artist’s music pages, then listen to a few songs or mixes of theirs. Very tedious, and not a flowy, enjoyable way to experience music.
+Over the past few years, I’ve been using Resident Advisor’s [event page](https://ra.co/events) to find live music in NYC. While I’ve had fairly decent success finding live music that I like, it can be daunting finding them to begin with. On any given Friday there can be 40+ shows in NYC, where each show could have 8+ artists. If I wanted to figure out which show I’d most likely enjoy on that night, I’d have to look up 320 artist music pages, then listen to a few of their songs or mixes.
 
-This led me to frame the problem of finding live music in a different way: The best way to visualize music events is not through multi-page event listings, but through a curated playlist of the artists playing those events. The great thing about “hearing” the event list before “reading” the event list is that my ears are generally more available to me throughout the day than my eyes; e.g. while working I can listen to music or a podcast, but can’t read a book or article.
+This led me to frame the problem of finding live music in a different way: If I only had 1 hour in my day to decide on which live music events I'd enjoy most, what would be the easiest way to accomplish this?
 
 # Solution
 
-The solution was to create a playlist of all artists on the event page. This playlist would allow me to go about my day, while my ears “scroll” through the event list. I built an automated system called [ra-preview](https://github.com/shawncruz/ra-preview) which maintains this playlist.
+The best way to quickly sample music events is not through multi-page event listings, but through a **curated playlist of the artists playing those events**. The benefit of *hearing* the artists on the event list over *reading* the setlist is that my ears are generally more available throughout the day than my eyes. In other words, while working I can listen to music or a podcast, but can’t read a book or article. 
 
-## Technical Implementation
+I built an automated system called [ra-preview](https://github.com/shawncruz/ra-preview) which maintains this curated playlist. Below, I discuss some technical details of how the system was built.
 
-From a technical perspective, to accomplish this I use:
-- Resident Advisors GraphQL API to pull the list of artists, and 
-- Spotify’s API to sync those artist’s top songs with a playlist. 
+## Technical Overview
 
-I defined the constraints of the problem as such:
-- Only pull events from the NY region
-- Only pull events within the next two weeks
-- System runs once a day
-- Pick each artist's most popular song to add to the playlist
+To build the `ra-preview` playlist, I stitch together data from Resident Advisor's API and Spotify's API. From a very high-level, the process for building the playlist is:
+1. First, query RA's GraphQL API to get all event listings happening in NYC over the next 2 weeks. The event list data (generally) has a list of artist names.
+2. Next, search Spotify's API for the top song from every artist in the list.
+3. Then, update the playlist with a list of each artist's top song.
 
-### Aggregating Artist Names
-
-Pulling the list of names from Resident Advisor's API is a pleasurable experience. Their API uses GraphQL, which enables me to ask for the precise artist name:
-```graphql
-query GET_EVENT_LISTINGS(
-    $filters: FilterInputDtoInput
-    $filterOptions: FilterOptionsInputDtoInput
-    $page: Int
-    $pageSize: Int
-) {
-    eventListings(
-        filters: $filters
-        filterOptions: $filterOptions
-        pageSize: $pageSize
-        page: $page
-    ) {
-        data {
-            listingDate
-            event {
-                artists {
-                    name
-                }
-            }
-        }
-        totalResults
-    }
-}
-```
-
-### Querying Spotify Artist IDs
-
-Before searching for songs and updating a playlist, the API requires that I look up the artist's Spotify Artist ID, if one exists, using the [Search for Item](https://developer.spotify.com/console/get-search-item/) endpoint: 
-```python
-# This is a pretty expensive API request to be looping over, which sucks. There has to be a better way to do this.
-for artist_name in set(artist_names):
-    results = spotify_api.search(
-        artist_name, limit=1, offset=0, type="artist", market=None
-    )
-    artist_ids.add(results["artists"]["items"][0]["id"])
-```
-
-The great thing about searching for an artist by string is that many artists exist with the same name. Since I'm choosing the first artist in the result set, I might be getting the wrong artist. It's great to find these "easter eggs" throughout the playlist occasionally.
-
-### Finding Artist's Top Song
-
-Much more straightforward endpoint than the last, this one simply takes a Spotify Artist ID and returns the Spotify Song ID of that artist's most popular song on Spotify:
-```python
-for artist_id in artist_ids:
-    top_tracks_reponse = spotify_api.artist_top_tracks(artist_id)
-    top_track_ids.add(top_tracks_reponse["tracks"][0]["id"])
-```
-
-### Updating the Playlist
-
-After accumulating the list of Spotify Song IDs, I update the playlist:
-
-```python
-# Since there's no endpoint to clear a playlist, I need to clear by replacing with the first track in the top_track_ids collection
-self.sp.playlist_replace_items("73p99duLkd9Cu5zNuUfcEU", [top_track_ids.pop()])
-# Add the rest in bulk
-for track_id_chunk in self.chunk(list(top_track_ids), 100):
-    self.sp.playlist_add_items("73p99duLkd9Cu5zNuUfcEU", track_id_chunk)
-```
+This process will automatically run once a day, ensuring the playlist is always updated.
 
 # Afterthoughts
 
 So far while using this playlist I’ve found a bunch of new artists that I really like. I’ve actually found so many that I tend to have a glut of show options. 
 
-Moving forward, I'd like to extend this idea:
+In the future, I'd like to extend this idea to:
 
-1. I’d like to create playlists for the cities that I’m travelling to in the future. That way I can figure out which shows I’d like to attend before I arrive.
-2. I’d like to create a single playlist that samples events from every single region in the world. I’d use that playlist to find an artist that I really like, then plan a vacation around seeing them no matter where in the world they’re playing.
+1. Create playlists for the cities that I’m travelling to in the future. That way I can figure out which shows I’d like to attend before I arrive.
+2. Create a single playlist that samples events from every single region in the world. I’d use that playlist to find an artist that I really like, then plan a vacation around seeing them no matter where in the world they’re playing.
 
-A lot of options here, but ultimately, Resident Advisor or Spotify could build something like this pretty easily. In the meantime, I’ll be maintaining my vision of this idea.
+Eventually Resident Advisor or Spotify could build something like this. In the meantime, I’ll be maintaining my vision of this idea.

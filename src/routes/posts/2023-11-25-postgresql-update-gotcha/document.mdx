@@ -1,12 +1,16 @@
 # Background
 
-A while ago, I came across an interesting PostgreSQL "gotcha" at work. I was writing a script to clean up some data discrepancies in our system. To illustrate my experience as a hypothetical, imagine I work on a Checkout system for an e-commerce company. Suppose we recently built a feature to enable an online shopper to merge all duplicate shipping addresses into a single preferred shipping address. From a technical standpoint, suppose I'm working in a distributed system where the shipping address data lives in the Address Service, and the data for merging possible duplicate shipping addresses lives in the Entity Merge Service.
+ I recently came across an interesting PostgreSQL "gotcha" at work while writing a script to resolve a data discrepancy in a distributed system.
 
-## System Design Overview
+# System Design Overview
+ 
+ To hypothetically illustrate the scenario, imagine I work in an E-Commerce Checkout system. Suppose I recently built a feature to enable an online shopper to merge all their duplicate shipping addresses into a single preferred shipping address. From a technical standpoint, suppose I'm working in a distributed system where the shipping address data lives in one system, and the data for merging possible duplicate shipping addresses lives in another.
 
-Suppose the following system design state:
+## Address Service
 
-### Address Service DB
+This service acts as the source of truth for all address-related data. Clients query its API or consume emitted events from this service to know things like a customer's billing address or shipping address options. For the purpose of this post, I focus solely on address data.
+
+### DB
 ```sql
 addressdb> create table shipping_addresses(
    id  varchar primary key, 
@@ -14,7 +18,10 @@ addressdb> create table shipping_addresses(
 );
 ```
 
-### Entity Merge Service DB
+## Entity Merge Service
+
+This service deals exclusively with deduplicating entities like customer profiles, addresses, and items across the system. 
+
 ```sql
 entitymergedb> create table duplicate_shipping_addresses(
     id  varchar primary key,
@@ -22,8 +29,9 @@ entitymergedb> create table duplicate_shipping_addresses(
 );
 ```
 
-### Example Dataset
+# The Problem
 
+Given the following example data set:
 ```sql
 addressdb> select * from shipping_addresses;
   id  |               location
@@ -42,13 +50,11 @@ entitymergedb> select * from duplicate_shipping_addresses;
 (1 row)
 ```
 
-# The Problem
-
 Let's say Shipping Addresses with IDs `sa-1`, `sa-3`, and `sa-5` were deleted in the Address Service, but for some reason didn't appropriately propogate to the Entity Merge Service. My task was to resolve the descrepancy between these two services. I began writing a one-off script to remove these orphaned IDs from the `duplicate_shipping_addresses` table.
 
 ## First Solution
 
-My initial solution to this problem was an iterative approach: For every deleted ID, if it exists in `duplicate_shipping_addresses.shipping_address_ids`, then remove it from the record's arra--one at a time. In SQL, this looks like:
+My initial solution to this problem was an iterative approach: For every deleted ID, if it exists in `duplicate_shipping_addresses.shipping_address_ids`, then remove it from the record's array--one at a time. In SQL, this looks like:
 ```sql
 with deleted_shipping_addresses as (
     select id from (values('sa-1'),('sa-3'),('sa-5')) a(id)
@@ -103,7 +109,9 @@ You might expect each output row to remove an ID from `shipping_address_ids`. **
 
 Watch what happens if I run the script multiple times in succession:
 ```sql
--- First update
+-- ####################
+-- ### First update ###
+-- ####################
 entitymergedb> select * from duplicate_shipping_addresses;
   id   |           shipping_address_ids
 -------+------------------------------------------
@@ -124,7 +132,9 @@ entitymergedb> select * from duplicate_shipping_addresses;
  dsa-1 | ["sa-2", "sa-3", "sa-4", "sa-5"]
 (1 row)
 
--- Second update                                                    
+-- #####################
+-- ### Second update ###
+-- #####################
 entitymergedb> with deleted_shipping_addresses as (
     select id from (values('sa-1'),('sa-3'),('sa-5')) a(id)
 )
@@ -139,7 +149,9 @@ entitymergedb> select * from duplicate_shipping_addresses ;
  dsa-1 | ["sa-2", "sa-4", "sa-5"]
 (1 row)
 
--- Third update                                                    
+-- #####################
+-- ### Third update ####
+-- #####################
 entitymergedb> with deleted_shipping_addresses as (
     select id from (values('sa-1'),('sa-3'),('sa-5')) a(id)
 )
@@ -154,7 +166,9 @@ entitymergedb> select * from duplicate_shipping_addresses ;
  dsa-1 | ["sa-2", "sa-4"]
 (1 row)
 
--- Fourth update (no-op)
+-- ##############################
+-- ### Fourth update (no-op) ####
+-- ##############################
 entitymergedb> with deleted_shipping_addresses as (
     select id from (values('sa-1'),('sa-3'),('sa-5')) a(id)
 )
@@ -170,17 +184,17 @@ entitymergedb> select * from duplicate_shipping_addresses ;
 (1 row)
 ```
 
-The resulting behavior is that only one ouput row is applied per invocation. Why does this happen? While the Postgres documentation doesn't give a reason, they do specify that this behavior is indeed intentional:
-> 📄 *When a FROM clause is present, what essentially happens is that the target table is joined to the tables mentioned in the from_item list, and each output row of the join represents an update operation for the target table. When using FROM you should ensure that the join produces at most one output row for each row to be modified. In other words, a target row shouldn't join to more than one row from the other table(s). If it does, then only one of the join rows will be used to update the target row, but which one will be used is not readily predictable.*
+The resulting behavior is that only one ouput row is applied per invocation. Why does this happen? While the Postgres documentation doesn't give a reason, the [UPDATE documentation](https://www.postgresql.org/docs/current/sql-update.html) does specify that this behavior is indeed intentional:
+> 📄 *When a FROM clause is present, what essentially happens is that the target table is joined to the tables mentioned in the from_item list, and each output row of the join represents an update operation for the target table. When using FROM you should ensure that the join produces at most one output row for each row to be modified. In other words, a target row shouldn't join to more than one row from the other table(s). If it does, then only one of the join rows will be used to update the target row, but which one will be used is not readily predictable.* [^1]
 
-Even though this solution solves a subset of the problem, it isn't practical to run this script an indeterminate amount of times.
+Even though this solution solves the problem, it isn't practical to run this script an indeterminate amount of times until a no-op is achieved.
 
 ## Second Solution
 
-Since my initial solution wasn't viable, my second solution separated the logic into two steps:
+Since my initial solution wasn't viable, my next attempt separated the logic into two steps:
 
-1. Group all deleted Shipping Address IDs by `duplicate_shipping_addresses.id`'s, given the Shipping Address ID exists in the records `duplicate_shipping_addresses.shipping_address_ids` array. 
-2. Update all `duplicate_shipping_addresses.shipping_address_ids` to be the difference between what's presently in that row to the mappings from 1.
+1. Map all Duplicate Shipping Address IDs to an array of their corresponding deleted Shipping Address IDs.
+2. Update all Shipping Address IDs in the Duplicate Addresses table to be the difference between what's presently in that row to the mappings from the previous step.
 
 In SQL, this looks like:
 ```sql
@@ -211,10 +225,15 @@ entitymergedb> select * from duplicate_shipping_addresses;
 entitymergedb> with deleted_shipping_addresses as (
     select id from (values('sa-1'),('sa-3'),('sa-5')) a(id)
 ), duplicate_id_to_address_ids as (
-    select pairs.duplicate_shipping_address_id, array_agg(pairs.shipping_address_id) address_ids from (
-        select id duplicate_shipping_address_id, jsonb_array_elements_text(shipping_address_ids) shipping_address_id from duplicate_shipping_addresses
+    select pairs.duplicate_shipping_address_id, 
+          array_agg(pairs.shipping_address_id) address_ids 
+    from (
+      select  id duplicate_shipping_address_id, 
+              jsonb_array_elements_text(shipping_address_ids) shipping_address_id 
+      from duplicate_shipping_addresses
     ) pairs
-    join deleted_shipping_addresses d on d.id = pairs.shipping_address_id
+    join deleted_shipping_addresses d 
+      on d.id = pairs.shipping_address_id
     group by pairs.duplicate_shipping_address_id
 )
 update duplicate_shipping_addresses dsa
@@ -230,13 +249,15 @@ entitymergedb> select * from duplicate_shipping_addresses ;
 (1 row)
 ```
 
-This solution is much more simple; and unlike the first solution, is idempotent. In a vacuum, once the IDs have been removed, no additional runs of this script will alter state.
+This solution is much simpler, and unlike the first solution, is idempotent. In a vacuum, once the IDs have been removed, additional runs of this script will not alter the state of the table.
 
 # Closing Thoughts
 
 Some takeways from this experience are:
 
-1. Always write a SELECT statement representation of your UPDATE statement to verify that the correct rows are being returned
-2. Identify if a script should be idempotent, and if so ensure that only the first invocation of the script results in changes to the DB
-3. Write tests to verify that the script has actually left the DB in a state that you expected
-4. And lastly, ensure that an UPDATE isn't attempting to update a row multiple times.
+1. Always write a `SELECT` statement representation of your `UPDATE` statement to verify that the correct rows are returned.
+2. Identify if a script should be idempotent, and if so, ensure that only the first invocation of the script results in changes to the DB.
+3. Write tests to verify that the script has actually left the DB in a state that you expected.
+4. And lastly, ensure that an `UPDATE` isn't attempting to update a row multiple times. This can be demonstrated by following step 1., asserting that only a single row is returned per unique constraint.
+
+[^1]: https://www.postgresql.org/docs/current/sql-update.html#:~:text=When%20a%20FROM%20clause%20is,operation%20for%20the%20target%20table.
