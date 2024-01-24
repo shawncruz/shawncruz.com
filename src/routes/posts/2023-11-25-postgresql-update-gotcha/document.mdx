@@ -1,10 +1,11 @@
 # Background
 
- I recently came across an interesting PostgreSQL "gotcha" at work while writing a script to resolve a data discrepancy in a distributed system.
+ I recently came across an interesting PostgreSQL "gotcha" at work while writing a script to resolve a data discrepancy in a distributed system. To illustrate how I stumbled upon this "gotcha", I'll pose a hypothetical system and scenario which mirrors my own experience.
 
 # System Design Overview
- 
- To hypothetically illustrate the scenario, imagine I work in an E-Commerce Checkout system. Suppose I recently built a feature to enable an online shopper to merge all their duplicate shipping addresses into a single preferred shipping address. From a technical standpoint, suppose I'm working in a distributed system where the shipping address data lives in one system, and the data for merging possible duplicate shipping addresses lives in another.
+
+ ## Scenario
+ Suppose I work in an E-Commerce Checkout system. Suppose I recently built a feature to enable an online shopper to merge all their duplicate shipping addresses into a single preferred shipping address. From a technical standpoint, suppose I'm working in a distributed system where the shipping address data lives in one system, and the data for merging possible duplicate shipping addresses lives in another.  
 
 ## Address Service
 
@@ -99,9 +100,9 @@ where dap.shipping_address_ids ? dsa.id;
 
            shipping_address_ids           | deleted_id |            resultant
 ------------------------------------------+------------+----------------------------------
- ["sa-1", "sa-2", "sa-3", "sa-4", "sa-5"] | sa-1       | ["sa-2", "sa-3", "sa-4", "sa-5"]
- ["sa-1", "sa-2", "sa-3", "sa-4", "sa-5"] | sa-3       | ["sa-1", "sa-2", "sa-4", "sa-5"]
- ["sa-1", "sa-2", "sa-3", "sa-4", "sa-5"] | sa-5       | ["sa-1", "sa-2", "sa-3", "sa-4"]
+ ["sa-1", "sa-2", "sa-3", "sa-4", "sa-5"] | "sa-1"     | ["sa-2", "sa-3", "sa-4", "sa-5"]
+ ["sa-1", "sa-2", "sa-3", "sa-4", "sa-5"] | "sa-3"     | ["sa-1", "sa-2", "sa-4", "sa-5"]
+ ["sa-1", "sa-2", "sa-3", "sa-4", "sa-5"] | "sa-5"     | ["sa-1", "sa-2", "sa-3", "sa-4"]
 (3 rows)
 ```
 
@@ -187,13 +188,13 @@ entitymergedb> select * from duplicate_shipping_addresses ;
 The resulting behavior is that only one ouput row is applied per invocation. Why does this happen? While the Postgres documentation doesn't give a reason, the [UPDATE documentation](https://www.postgresql.org/docs/current/sql-update.html) does specify that this behavior is indeed intentional:
 > 📄 *When a FROM clause is present, what essentially happens is that the target table is joined to the tables mentioned in the from_item list, and each output row of the join represents an update operation for the target table. When using FROM you should ensure that the join produces at most one output row for each row to be modified. In other words, a target row shouldn't join to more than one row from the other table(s). If it does, then only one of the join rows will be used to update the target row, but which one will be used is not readily predictable.* [^1]
 
-Even though this solution solves the problem, it isn't practical to run this script an indeterminate amount of times until a no-op is achieved.
+Even though this solution solves the problem, it isn't practical to run this script an indeterminate amount of times until all orphaned IDs have been removed.
 
 ## Second Solution
 
 Since my initial solution wasn't viable, my next attempt separated the logic into two steps:
 
-1. Map all Duplicate Shipping Address IDs to an array of their corresponding deleted Shipping Address IDs.
+1. Map all Duplicate Shipping Address IDs to an array of deleted Shipping Address IDs that should be deleted from that row.
 2. Update all Shipping Address IDs in the Duplicate Addresses table to be the difference between what's presently in that row to the mappings from the previous step.
 
 In SQL, this looks like:
@@ -249,7 +250,7 @@ entitymergedb> select * from duplicate_shipping_addresses ;
 (1 row)
 ```
 
-This solution is much simpler, and unlike the first solution, is idempotent. In a vacuum, once the IDs have been removed, additional runs of this script will not alter the state of the table.
+Additionally, unlike the first solution, this script is idempotent. In a vacuum, once the IDs have been removed, additional runs of this script will not alter the state of the table.
 
 # Closing Thoughts
 

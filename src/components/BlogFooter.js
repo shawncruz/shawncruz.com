@@ -19,7 +19,7 @@ function BlogFooter() {
           </Link>
         </div>
         <div>
-          <i>S.</i> © 2023
+          <i>S.</i> © 2024
         </div>
       </div>
     </footer>
