@@ -1,0 +1,20 @@
+---
+// Matches the old site's format, e.g. "November 25, 2023".
+// timeZone UTC keeps a post dated 2023-11-25 from showing as the 24th.
+interface Props {
+	date: Date;
+}
+
+const { date } = Astro.props;
+---
+
+<div class="timestamp">
+	<time datetime={date.toISOString()}>
+		{date.toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric',
+			timeZone: 'UTC',
+		})}
+	</time>
+</div>

@@ -1,0 +1,13 @@
+---
+import PostList from '../components/PostList.astro';
+import { PAGE_SIZE, SITE_TITLE } from '../consts';
+import Base from '../layouts/Base.astro';
+import { getSortedPosts } from '../lib/posts';
+
+const posts = await getSortedPosts();
+const pageCount = Math.ceil(posts.length / PAGE_SIZE);
+---
+
+<Base title={SITE_TITLE}>
+	<PostList posts={posts.slice(0, PAGE_SIZE)} pageNumber={1} pageCount={pageCount} />
+</Base>

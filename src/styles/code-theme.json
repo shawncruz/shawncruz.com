@@ -1,0 +1,66 @@
+{
+	"name": "shawncruz",
+	"type": "dark",
+	"colors": {
+		"editor.background": "#000000",
+		"editor.foreground": "#f7fcff"
+	},
+	"tokenColors": [
+		{
+			"scope": ["comment", "punctuation.definition.comment"],
+			"settings": { "foreground": "#c1b9b9", "fontStyle": "italic" }
+		},
+		{
+			"scope": ["string", "string.quoted", "string.template", "markup.underline.link"],
+			"settings": { "foreground": "#a0c3ff" }
+		},
+		{
+			"scope": ["constant.numeric"],
+			"settings": { "foreground": "#91b9ff" }
+		},
+		{
+			"scope": ["constant.language.boolean"],
+			"settings": { "foreground": "#ff5874" }
+		},
+		{
+			"scope": ["constant", "constant.language", "constant.character", "support.constant"],
+			"settings": { "foreground": "#eeb926" }
+		},
+		{
+			"scope": ["keyword", "storage", "storage.type", "storage.modifier", "entity.name.tag", "keyword.other.DML", "keyword.other.DDL", "keyword.other.create", "keyword.other.data-integrity"],
+			"settings": { "foreground": "#f79ba2" }
+		},
+		{
+			"scope": ["keyword.operator", "keyword.operator.star", "keyword.operator.comparison"],
+			"settings": { "foreground": "#b933ad" }
+		},
+		{
+			"scope": ["punctuation", "meta.brace", "punctuation.separator", "punctuation.terminator"],
+			"settings": { "foreground": "#7cc7cd" }
+		},
+		{
+			"scope": ["entity.name.function", "support.function", "meta.function-call"],
+			"settings": { "foreground": "#f3e056" }
+		},
+		{
+			"scope": ["entity.name.type", "entity.name.class", "support.class", "support.type"],
+			"settings": { "foreground": "#46b9c8" }
+		},
+		{
+			"scope": ["entity.other.attribute-name"],
+			"settings": { "foreground": "#addb67", "fontStyle": "italic" }
+		},
+		{
+			"scope": ["variable", "variable.other"],
+			"settings": { "foreground": "#d6deeb" }
+		},
+		{
+			"scope": ["variable.other.property", "support.type.property-name", "meta.object-literal.key"],
+			"settings": { "foreground": "#80cbc4" }
+		},
+		{
+			"scope": ["comment.line.number-sign.shebang", "punctuation.definition.comment.shebang"],
+			"settings": { "foreground": "#808080", "fontStyle": "italic" }
+		}
+	]
+}

@@ -1,0 +1,30 @@
+---
+// Posts live at /posts/<name>, the same URLs as the old site.
+import { type CollectionEntry, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+import { getSortedPosts } from '../../lib/posts';
+
+export async function getStaticPaths() {
+	const posts = await getSortedPosts();
+	const link = (p?: CollectionEntry<'blog'>) =>
+		p && { title: p.data.title, href: `/posts/${p.id}` };
+	return posts.map((post, i) => ({
+		params: { slug: post.id },
+		props: { post, newer: link(posts[i - 1]), older: link(posts[i + 1]) },
+	}));
+}
+
+const { post, newer, older } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BlogPost
+	title={post.data.title}
+	description={post.data.description}
+	pubDate={post.data.pubDate}
+	href={`/posts/${post.id}`}
+	newer={newer}
+	older={older}
+>
+	<Content />
+</BlogPost>

@@ -1,0 +1,29 @@
+---
+// Index pages 2, 3, ... at /page/2 etc., same URLs as the old site.
+import PostList from '../../components/PostList.astro';
+import { PAGE_SIZE, SITE_TITLE } from '../../consts';
+import Base from '../../layouts/Base.astro';
+import { getSortedPosts } from '../../lib/posts';
+
+export async function getStaticPaths() {
+	const posts = await getSortedPosts();
+	const pageCount = Math.ceil(posts.length / PAGE_SIZE);
+	return Array.from({ length: Math.max(pageCount - 1, 0) }, (_, i) => {
+		const pageNumber = i + 2;
+		return {
+			params: { page: String(pageNumber) },
+			props: {
+				pageNumber,
+				pageCount,
+				posts: posts.slice((pageNumber - 1) * PAGE_SIZE, pageNumber * PAGE_SIZE),
+			},
+		};
+	});
+}
+
+const { posts, pageNumber, pageCount } = Astro.props;
+---
+
+<Base title={`${SITE_TITLE} – page ${pageNumber}`}>
+	<PostList posts={posts} pageNumber={pageNumber} pageCount={pageCount} />
+</Base>

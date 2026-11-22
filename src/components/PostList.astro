@@ -1,0 +1,100 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	posts: CollectionEntry<'blog'>[];
+	pageNumber: number;
+	pageCount: number;
+}
+
+const { posts, pageNumber, pageCount } = Astro.props;
+const pageHref = (n: number) => (n === 1 ? '/' : `/page/${n}`);
+---
+
+<div class="column">
+	<div class="flexItem">
+		<ul class="articlesList">
+			{
+				posts.map((post) => (
+					<li>
+						<article class="ArticleSummary">
+							<FormattedDate date={post.data.pubDate} />
+							<h2>
+								<a href={`/posts/${post.id}`}>{post.data.title}</a>
+							</h2>
+							<p>{post.data.description}</p>
+						</article>
+					</li>
+				))
+			}
+		</ul>
+		{
+			pageCount > 1 && (
+				<small class="Pagination">
+					{pageNumber !== 1 && (
+						<a class="previous" href={pageHref(pageNumber - 1)}>
+							← Previous
+						</a>
+					)}
+					<span>
+						{' '}
+						Page {pageNumber}/{pageCount}{' '}
+					</span>
+					{pageNumber < pageCount && (
+						<a class="next" href={pageHref(pageNumber + 1)}>
+							Next →
+						</a>
+					)}
+				</small>
+			)
+		}
+	</div>
+</div>
+
+<style>
+	.flexItem {
+		padding-top: 15px;
+		width: 100%;
+	}
+	.articlesList,
+	.articlesList > li {
+		list-style: none;
+		padding: 0;
+	}
+	.ArticleSummary {
+		padding-top: 1px;
+		padding-bottom: 1px;
+		margin-bottom: 1em;
+	}
+	.ArticleSummary h2 {
+		font-weight: 900;
+		margin: 0;
+		font-size: 35px;
+		line-height: 1.1;
+		font-family: CrimsonText, Georgia, serif;
+	}
+	.ArticleSummary a {
+		text-decoration: none;
+	}
+	.ArticleSummary p {
+		font-size: 12px;
+		font-style: italic;
+		color: var(--muted);
+		font-family: Karla, sans-serif;
+	}
+	.Pagination {
+		display: block;
+	}
+	.Pagination .previous {
+		margin-right: 0.5rem;
+	}
+	.Pagination .next {
+		margin-left: 0.5rem;
+	}
+	@media only screen and (max-width: 800px) {
+		.ArticleSummary h2 {
+			font-size: 30px;
+		}
+	}
+</style>

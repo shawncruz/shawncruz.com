@@ -1,0 +1,84 @@
+---
+import FormattedDate from '../components/FormattedDate.astro';
+import Base from './Base.astro';
+
+interface Link {
+	title: string;
+	href: string;
+}
+
+interface Props {
+	title: string;
+	description: string;
+	pubDate: Date;
+	href: string;
+	older?: Link;
+	newer?: Link;
+}
+
+const { title, description, pubDate, href, older, newer } = Astro.props;
+---
+
+<Base title={title} description={description}>
+	<article class="column">
+		<div class="flexItem">
+			<header class="postHeader">
+				<FormattedDate date={pubDate} />
+				<h1 class="title"><a href={href}>{title}</a></h1>
+			</header>
+			<div class="content">
+				<slot />
+			</div>
+			<footer class="postFooter">
+				<section class="links">
+					{older && <a class="previous" href={older.href}>← {older.title}</a>}
+					{newer && <a class="next" href={newer.href}>{newer.title} →</a>}
+				</section>
+			</footer>
+		</div>
+	</article>
+</Base>
+
+<style>
+	.flexItem {
+		padding-top: 15px;
+		width: 100%;
+	}
+	.title {
+		font-family: CrimsonText, Georgia, serif;
+		font-weight: 900;
+		line-height: 1.1;
+		font-size: 2.66667rem;
+		text-rendering: optimizeLegibility;
+		margin: 0;
+	}
+	.title > a {
+		text-decoration: none;
+	}
+	.title::after {
+		content: '';
+		display: block;
+		width: 60px;
+		padding-top: 20px;
+		border-bottom: 1px solid var(--purple);
+	}
+	.postFooter {
+		border-top: 1px solid #eee;
+		padding-top: 2.5em;
+		padding-bottom: 1em;
+	}
+	.links {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+	.links .next {
+		flex: 1 1 auto;
+		text-align: right;
+	}
+	@media only screen and (max-width: 800px) {
+		.title {
+			font-size: 30px;
+		}
+	}
+</style>
